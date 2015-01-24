@@ -2,7 +2,7 @@ package scala.slick.driver
 
 import scala.slick.lifted._
 import scala.slick.ast._
-import scala.slick.jdbc.{ PositionedResult, JdbcType }
+import scala.slick.jdbc.PositionedResult
 import scala.slick.util.MacroSupport.macroSupportInterpolation
 import scala.slick.profile.{ SqlProfile, Capability }
 import scala.slick.compiler.{ Phase, QueryCompiler, CompilerState }
@@ -11,7 +11,7 @@ import java.sql.{ Timestamp, Date, Time }
 /**
  * Slick driver for Microsoft SQL Server.
  *
- * This driver implements the [[scala.slick.driver.ExtendedProfile]]
+ * This driver implements the [[scala.slick.driver.JdbcProfile]]
  * ''without'' the following capabilities:
  *
  * <ul>
