@@ -11,22 +11,22 @@ import java.sql.{ Timestamp, Date, Time }
 /**
  * Slick driver for Microsoft SQL Server.
  *
- * This driver implements the [[scala.slick.driver.JdbcProfile]]
+ * This driver implements the `scala.slick.driver.JdbcProfile`
  * ''without'' the following capabilities:
  *
  * <ul>
- *   <li>[[scala.slick.driver.JdbcProfile.capabilities.returnInsertOther]]:
+ *   <li>`scala.slick.driver.JdbcProfile.capabilities.returnInsertOther`:
  *     When returning columns from an INSERT operation, only a single column
  *     may be specified which must be the table's AutoInc column.</li>
- *   <li>[[scala.slick.profile.SqlProfile.capabilities.sequence]]:
+ *   <li>`scala.slick.profile.SqlProfile.capabilities.sequence`:
  *     Sequences are not supported because SQLServer does not have this
  *     feature.</li>
- *   <li>[[scala.slick.driver.JdbcProfile.capabilities.forceInsert]]:
+ *   <li>`scala.slick.driver.JdbcProfile.capabilities.forceInsert`:
  *     Inserting explicit values into AutoInc columns with ''forceInsert''
  *     operations is not supported.</li>
  * </ul>
  */
-trait SQLServerDriver extends JdbcDriver { driver =>
+trait FreeSQLServerDriver extends JdbcDriver { driver =>
 
   override protected def computeCapabilities: Set[Capability] = (super.computeCapabilities
     - JdbcProfile.capabilities.forceInsert
@@ -146,4 +146,4 @@ trait SQLServerDriver extends JdbcDriver { driver =>
   }
 }
 
-object SQLServerDriver extends SQLServerDriver
+object FreeSQLServerDriver extends FreeSQLServerDriver
