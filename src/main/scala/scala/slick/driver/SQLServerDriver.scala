@@ -2,11 +2,11 @@ package scala.slick.driver
 
 import scala.slick.lifted._
 import scala.slick.ast._
-import scala.slick.jdbc.{PositionedResult, JdbcType}
+import scala.slick.jdbc.{ PositionedResult, JdbcType }
 import scala.slick.util.MacroSupport.macroSupportInterpolation
-import scala.slick.profile.{SqlProfile, Capability}
-import scala.slick.compiler.{Phase, QueryCompiler, CompilerState}
-import java.sql.{Timestamp, Date, Time}
+import scala.slick.profile.{ SqlProfile, Capability }
+import scala.slick.compiler.{ Phase, QueryCompiler, CompilerState }
+import java.sql.{ Timestamp, Date, Time }
 
 /**
  * Slick driver for Microsoft SQL Server.
@@ -54,19 +54,19 @@ trait SQLServerDriver extends JdbcDriver { driver =>
 
     override protected def buildSelectModifiers(c: Comprehension) {
       (c.fetch, c.offset) match {
-        case (Some(t), Some(d)) => b"top ${d+t} "
-        case (Some(t), None   ) => b"top $t "
-        case (None,    _      ) => if(!c.orderBy.isEmpty) b"top 100 percent "
+        case (Some(t), Some(d)) => b"top ${d + t} "
+        case (Some(t), None) => b"top $t "
+        case (None, _) => if (!c.orderBy.isEmpty) b"top 100 percent "
       }
     }
 
     override protected def buildOrdering(n: Node, o: Ordering) {
-      if(o.nulls.last && !o.direction.desc)
+      if (o.nulls.last && !o.direction.desc)
         b"case when ($n) is null then 1 else 0 end,"
-      else if(o.nulls.first && o.direction.desc)
+      else if (o.nulls.first && o.direction.desc)
         b"case when ($n) is null then 0 else 1 end,"
       expr(n)
-      if(o.direction.desc) b" desc"
+      if (o.direction.desc) b" desc"
     }
 
     override def expr(n: Node, skipParens: Boolean = false): Unit = n match {
@@ -85,10 +85,10 @@ trait SQLServerDriver extends JdbcDriver { driver =>
 
   class ColumnDDLBuilder(column: FieldSymbol) extends super.ColumnDDLBuilder(column) {
     override protected def appendOptions(sb: StringBuilder) {
-      if(defaultLiteral ne null) sb append " DEFAULT " append defaultLiteral
-      if(notNull) sb append " NOT NULL"
-      if(primaryKey) sb append " PRIMARY KEY"
-      if(autoIncrement) sb append " IDENTITY"
+      if (defaultLiteral ne null) sb append " DEFAULT " append defaultLiteral
+      if (notNull) sb append " NOT NULL"
+      if (primaryKey) sb append " PRIMARY KEY"
+      if (autoIncrement) sb append " IDENTITY"
     }
   }
 
@@ -104,7 +104,7 @@ trait SQLServerDriver extends JdbcDriver { driver =>
     /* SQL Server does not have a proper BOOLEAN type. The suggested workaround is
      * BIT with constants 1 and 0 for TRUE and FALSE. */
     class BooleanJdbcType extends super.BooleanJdbcType {
-      override def valueToSQLLiteral(value: Boolean) = if(value) "1" else "0"
+      override def valueToSQLLiteral(value: Boolean) = if (value) "1" else "0"
     }
     /* Selecting a straight Date or Timestamp literal fails with a NPE (probably
      * because the type information gets lost along the way), so we cast all Date
@@ -118,10 +118,10 @@ trait SQLServerDriver extends JdbcDriver { driver =>
       override def nextValue(r: PositionedResult) = {
         val s = r.nextString()
         val sep = s.indexOf('.')
-        if(sep == -1) Time.valueOf(s)
+        if (sep == -1) Time.valueOf(s)
         else {
           val t = Time.valueOf(s.substring(0, sep))
-          val millis = (("0."+s.substring(sep+1)).toDouble * 1000.0).toInt
+          val millis = (("0." + s.substring(sep + 1)).toDouble * 1000.0).toInt
           t.setTime(t.getTime + millis)
           t
         }
