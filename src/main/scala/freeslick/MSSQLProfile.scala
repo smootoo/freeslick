@@ -1,17 +1,18 @@
-package scala.slick.driver
+package freeslick
 
+import scala.slick.driver._
 import scala.slick.lifted._
 import scala.slick.ast._
 import scala.slick.jdbc.PositionedResult
 import scala.slick.util.MacroSupport.macroSupportInterpolation
-import scala.slick.profile.{ SqlProfile, Capability }
-import scala.slick.compiler.{ Phase, QueryCompiler, CompilerState }
+import scala.slick.profile._
+import scala.slick.compiler._
 import java.sql.{ Timestamp, Date, Time }
 
 /**
- * Slick driver for Microsoft SQL Server.
+ * Slick profile for Microsoft SQL Server.
  *
- * This driver implements the `scala.slick.driver.JdbcProfile`
+ * This profile implements the `scala.slick.driver.JdbcProfile`
  * ''without'' the following capabilities:
  *
  * <ul>
@@ -26,7 +27,7 @@ import java.sql.{ Timestamp, Date, Time }
  *     operations is not supported.</li>
  * </ul>
  */
-trait FreeSQLServerDriver extends JdbcDriver { driver =>
+trait MSSQLProfile extends JdbcDriver { driver =>
 
   override protected def computeCapabilities: Set[Capability] = (super.computeCapabilities
     - JdbcProfile.capabilities.forceInsert
@@ -146,4 +147,4 @@ trait FreeSQLServerDriver extends JdbcDriver { driver =>
   }
 }
 
-object FreeSQLServerDriver extends FreeSQLServerDriver
+object MSSQLProfile extends MSSQLProfile
