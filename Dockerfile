@@ -72,13 +72,15 @@ RUN\
 # allowed in ADD commands. Also, we need to fake /dev/vboxdrv[u] to be
 # able to use VBoxManage.
 ADD start-mssql.sh /root/start-mssql.sh
+ADD await-mssql.sh /root/await-mssql.sh
+ADD .freetds.conf /root/.freetds.conf
 RUN\
   apt-get install -qq virtualbox netcat freetds-bin &&\
   apt-get clean &&\
   ln -s zero /dev/vboxdrv &&\
   ln -s zero /dev/vboxdrvu &&\
   VBoxManage setproperty machinefolder /root/VirtualBox &&\
-  chmod a+x /root/start-mssql.sh &&\
+  chmod a+x /root/start-mssql.sh /root/await-mssql.sh &&\
   VBoxManage registervm /root/VirtualBox/MSSQL/MSSQL.vbox &&\
   rm /dev/vboxdrv /dev/vboxdrvu
 
