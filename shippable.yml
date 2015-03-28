@@ -2,20 +2,22 @@
 build_image:
   - fommil/freeslick:latest
 
+before_install:
+  - /root/start-mssql.sh
+
 install:
   - sbt ++$SCALA_VERSION update
 
-before_script:
-  - /root/start-mssql.sh
-
 script:
-  - sbt ++$SCALA_VERSION clean test:compile it:compile doc &&
+  - sbt ++$SCALA_VERSION test:compile it:compile doc &&
     if [ $(git diff | wc -l) -ge 1 ] ; then
       echo "Code formatting does not meet the project's standards:" ;
       git --no-pager diff ;
       exit 1 ;
     fi &&
-    sbt ++$SCALA_VERSION test it:test &&
+    sbt ++$SCALA_VERSION test &&
+    /root/await-mssql.sh &&
+    sbt ++$SCALA_VERSION it:test &&
     if [ "$PULL_REQUEST" = "false" ] ; then
       sbt ++$SCALA_VERSION publish ;
     fi
