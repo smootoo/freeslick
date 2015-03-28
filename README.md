@@ -1,16 +1,26 @@
-[![Build Status](https://travis-ci.org/fommil/freeslick.svg?branch=master)](https://travis-ci.org/fommil/freeslick)
+[![Build Status](https://api.shippable.com/projects/5504572d5ab6cc13529ad13e/badge?branchName=master)](https://app.shippable.com/projects/5504572d5ab6cc13529ad13e/builds/latest)
 [![Coverage Status](https://coveralls.io/repos/fommil/freeslick/badge.svg?branch=master)](https://coveralls.io/r/fommil/freeslick?branch=master)
 
 # FreeSlick
 
-[Free software](https://www.gnu.org/philosophy/free-sw.html) continuation of the [Slick](http://slick.typesafe.com/) MS-SQL driver.
+[Free software](https://www.gnu.org/philosophy/free-sw.html)
+continuation of the [Slick](http://slick.typesafe.com/) MS-SQL driver,
+with a full suite of integration tests against actual MS-SQL (2000,
+2005, 2008) instances.
 
 # Usage
 
-Normally in Slick, you would pass the driver to Slick by name, use
+As is normal in Slick, import the "driver" (really these are profiles)
+explicitly in order to get access to the `Database` instance:
 
+```scala
+import freeslick.MSSQLProfile.simple._
 ```
-scala.slick.driver.FreeSQLServerDriver
+
+and don't forget to pass your actual JDBC driver when creating a connection, e.g.
+
+```scala
+val db = Database.forURL(url, driver = "net.sourceforge.jtds.jdbc.Driver")
 ```
 
 
@@ -26,7 +36,7 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 # History
 
 In version 2.0 of Slick,
-[Typesafe removed support for their trivial MS-SQL driver](https://github.com/slick/slick/commit/e1f38fdcaa0e1105f9980c81a945e2ea27f4eb56#diff-50d3fdf1ae11ed9fd46016fbb8271858), [closed the source and started to charge for it](http://slick.typesafe.com/doc/2.0.0/extensions.html). BSD and Apache OSS licenses allow such moves: this incident serves as a good reason for you to prefer a Free Software license that cannot be closed again (e.g. LGPL) in your next github project or contribution.
+[Typesafe removed support for their trivial MS-SQL driver](https://github.com/slick/slick/commit/e1f38fdcaa0e1105f9980c81a945e2ea27f4eb56#diff-50d3fdf1ae11ed9fd46016fbb8271858), [closed the source and started to charge for it](http://slick.typesafe.com/doc/2.0.0/extensions.html). BSD and Apache OSS licenses allow such moves: this incident serves as a good reason for you to prefer a Free Software license that cannot be closed again (e.g. LGPL) in your next github project.
 
 Anybody who works in a corporate environment knows the challenges involved in getting approval to buy any form of license - no matter the cost - so this strategic move from Typesafe is not only concerning, but frustrating for anybody using a Scala stack.
 

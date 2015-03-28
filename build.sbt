@@ -1,24 +1,31 @@
 import sbt._
 import ScoverageSbtPlugin.ScoverageKeys._
 
-// NOTE: the following skips the slower tests
-// test-only * -- -l SlowTest
+// NOTE: the following skips the MS-SQL tests
+// it:test-only * -- -l MSSQL
 
 organization := "com.github.fommil"
 
 name := "freeslick"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.10.5"
 
 version := "2.0.3-SNAPSHOT"
 
 //resolvers += Resolver.sonatypeRepo("snapshots")
 
+configs(IntegrationTest)
+inConfig(IntegrationTest)(Defaults.testSettings)
+parallelExecution in IntegrationTest := false
+
 libraryDependencies ++= Seq(
-  "com.typesafe.slick"         %% "slick"                % "2.0.3",
-  "org.scalatest"              %% "scalatest"            % "2.2.3" % "test",
-  "org.scalamock"              %% "scalamock-scalatest-support" % "3.2.1" % "test",
-  "org.scalacheck"             %% "scalacheck"           % "1.12.1" % "test"
+  "com.typesafe.slick"  %% "slick"                       % "2.0.3",
+  "org.scalatest"       %% "scalatest"                   % "2.2.4"  % "test;it",
+  "org.scalamock"       %% "scalamock-scalatest-support" % "3.2.1"  % "test;it",
+  "org.scalacheck"      %% "scalacheck"                  % "1.12.2" % "test;it",
+  "ch.qos.logback"       % "logback-classic"             % "1.1.2"  % "test;it",
+  // jTDS 2.3.x is JDK 1.7+ so stick with 1.2.x
+  "net.sourceforge.jtds" % "jtds"                        % "1.2.8"  % "it"
 )
 
 scalacOptions in Compile ++= Seq(

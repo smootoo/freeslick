@@ -1,0 +1,43 @@
+# BLOCKED https://github.com/Shippable/support/issues/1170
+build_image:
+  - fommil/freeslick:latest
+
+install:
+  - sbt ++$SCALA_VERSION update
+
+before_script:
+  - /root/start-mssql.sh
+
+script:
+  - sbt ++$SCALA_VERSION clean test:compile it:compile doc &&
+    if [ $(git diff | wc -l) -ge 1 ] ; then
+      echo "Code formatting does not meet the project's standards:" ;
+      git --no-pager diff ;
+      exit 1 ;
+    fi &&
+    sbt ++$SCALA_VERSION test it:test &&
+    if [ "$PULL_REQUEST" = "false" ] ; then
+      sbt ++$SCALA_VERSION publish ;
+    fi
+
+#after_success:
+#  - sbt clean coverage test it:test &&
+#    sbt coverageAggregate coveralls
+
+after_failure:
+  - if [ -f test-output.log ] ; then cat test-output.log ; fi &&
+    if [ -f it-output.log ] ; then cat it-output.log ; fi
+
+# Reminder: set the following encrypted variables on one line:
+#
+#   SONATYPE_USERNAME
+#   SONATYPE_PASSWORD
+#   COVERALLS_REPO_TOKEN
+#
+# WORKAROUND https://github.com/Shippable/support/issues/1198
+env:
+  global:
+    - COVERALLS_REPO_TOKEN=ITZyJ1vCFhzF0EbZfnjB714MuswmIsfFz
+    - secure: s1Bn0F1KD1Ri8fyPxngHZ/pmK5qjdiMDyHkra601MLajaEcWLkkkFU9+2nBEXZZFdU9+d1SflRNPqxww4qjp4Qn6DsehuRBmeVzd8PTw+xXM3w/zJZf0LF322sLmKTk8LxtdWUPPnvRmfz6o5eTpJYsa42eknzQfVLcKKcT2o/WVzOb6zUjGRtcEC9eJJ81B3CfciiIxNMZwNighrgwdKCBTze4xbFPWP+/ETnXKdpfOyshZ2mhRBLvRbzfFh5wnsifgFrT/xEtOC6/I3SlLeqVu9xMTIcCxWILroOFUmGxHVpM4YhheJTlIDJt+5+n0chPkrpXtJ/6hql7B/Kqh8A==
+  matrix:
+    - SCALA_VERSION=2.10.5
