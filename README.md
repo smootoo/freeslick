@@ -56,7 +56,7 @@ highly time-consuming.
 
 1. Start with a Windows XP image.
 2. Download
-   [SQL Server Express 2005](http://www.microsoft.com/en-gb/download/details.aspx?id=21844)
+   [SQL Server Express 2005 SP4](http://www.microsoft.com/en-gb/download/details.aspx?id=184)
    from Microsoft and install on the guest image. Make sure to select
    the "mixed mode" authentication, and the defaults for everything
    else. Select a password, we use `FreeSlick`.
@@ -65,7 +65,10 @@ highly time-consuming.
    from the "dynamic port" entry for "all interfaces" and explicitly adding port
    `2005`. You may remove the other protocol options, as we will not
    use them.
-4. Test the JDBC connection from the host by attempting to connect to
+4. Add flag `-T8038` to the startup parameters as workaround for
+   [virtualbox #3613](https://www.virtualbox.org/ticket/3613) more
+   details about [clock timings on the MSDN blog](http://blogs.msdn.com/b/psssql/archive/2009/05/29/how-it-works-sql-server-timings-and-timer-output-gettickcount-timegettime-queryperformancecounter-rdtsc.aspx)
+5. Test the JDBC connection from the host by attempting to connect to
    `jdbc:jtds:sqlserver://localhost:2005` with a tool in your
    host system, e.g.
    [Squirrel SQL](http://squirrel-sql.sourceforge.net/) with the
@@ -84,7 +87,10 @@ highly time-consuming.
    from the "dynamic port" entry for "all interfaces" and explicitly adding port
    `2008`. You may remove the other protocol options, as we will not
    use them.
-4. Test the JDBC connection from the host by attempting to connect to
+4. Add flag `-T8038` to the startup parameters as workaround for
+   [virtualbox #3613](https://www.virtualbox.org/ticket/3613) more
+   details about [clock timings on the MSDN blog](http://blogs.msdn.com/b/psssql/archive/2009/05/29/how-it-works-sql-server-timings-and-timer-output-gettickcount-timegettime-queryperformancecounter-rdtsc.aspx)
+5. Test the JDBC connection from the host by attempting to connect to
    `jdbc:jtds:sqlserver://localhost:2008` with a tool in your
    host system, e.g.
    [Squirrel SQL](http://squirrel-sql.sourceforge.net/) with the
