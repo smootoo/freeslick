@@ -1,9 +1,11 @@
 package freeslick
 
+import scala.slick.SlickException
 import scala.slick.driver._
+import scala.slick.jdbc.meta.MTable
 import scala.slick.lifted._
 import scala.slick.ast._
-import scala.slick.jdbc.PositionedResult
+import scala.slick.jdbc.{ UnitInvoker, PositionedResult }
 import scala.slick.util.MacroSupport.macroSupportInterpolation
 import scala.slick.profile._
 import scala.slick.compiler._
@@ -39,6 +41,7 @@ trait MSSQLProfile extends JdbcDriver { driver =>
   override val columnTypes = new JdbcTypes
   override def createQueryBuilder(n: Node, state: CompilerState): QueryBuilder = new QueryBuilder(n, state)
   override def createColumnDDLBuilder(column: FieldSymbol, table: Table[_]): ColumnDDLBuilder = new ColumnDDLBuilder(column)
+  override def getTables: UnitInvoker[MTable] = MTable.getTables(None, None, None, Some(List("TABLE")))
 
   override def defaultSqlTypeName(tmd: JdbcType[_]): String = tmd.sqlType match {
     case java.sql.Types.BOOLEAN => "BIT"

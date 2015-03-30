@@ -20,12 +20,14 @@ parallelExecution in IntegrationTest := false
 
 libraryDependencies ++= Seq(
   "com.typesafe.slick"  %% "slick"                       % "2.0.3",
+  "com.typesafe.slick"  %% "slick-testkit"               % "2.0.3"  % "test;it",
+  "com.novocode"        %  "junit-interface"             % "0.10"   % "test;it",
   "org.scalatest"       %% "scalatest"                   % "2.2.4"  % "test;it",
   "org.scalamock"       %% "scalamock-scalatest-support" % "3.2.1"  % "test;it",
   "org.scalacheck"      %% "scalacheck"                  % "1.12.2" % "test;it",
   "ch.qos.logback"       % "logback-classic"             % "1.1.2"  % "test;it",
   // jTDS 2.3.x is JDK 1.7+ so stick with 1.2.x
-  "net.sourceforge.jtds" % "jtds"                        % "1.2.8"  % "it"
+  "net.sourceforge.jtds" % "jtds"                        % "1.2.8"  % "test;it"
 )
 
 scalacOptions in Compile ++= Seq(
