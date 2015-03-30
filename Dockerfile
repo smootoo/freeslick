@@ -1,6 +1,6 @@
 # https://docs.docker.com/reference/builder/
 
-# docker build -t fommil/freeslick:latest .
+# docker build --no-cache -t fommil/freeslick:latest .
 # docker push fommil/freeslick:latest
 # docker run -i -t --device=/dev/vboxdrv fommil/freeslick:latest
 
