@@ -1,6 +1,6 @@
 # https://docs.docker.com/reference/builder/
 
-# docker build -t fommil/freeslick:build .
+# docker build --no-cache -t fommil/freeslick:build .
 # docker push fommil/freeslick:build
 # docker run -i -t --device=/dev/vboxdrv fommil/freeslick:build
 
@@ -47,9 +47,10 @@ RUN\
 
 ################################################
 # SBT (and by implication, Scala)
-ADD https://raw.githubusercontent.com/paulp/sbt-extras/master/sbt /usr/bin/sbt
-RUN chmod a+x /usr/bin/sbt
+#ADD https://raw.githubusercontent.com/paulp/sbt-extras/master/sbt /usr/bin/sbt
+ADD sbt /usr/bin/sbt
 RUN\
+  chmod a+x /usr/bin/sbt &&\
   apt-get install -qq curl &&\
   apt-get clean &&\
   mkdir /tmp/sbt &&\
