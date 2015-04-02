@@ -9,7 +9,7 @@
 
 # matching my VPS machine...
 #FROM debian:jessie
-FROM ubuntu:precise
+FROM ubuntu:trusty
 
 MAINTAINER Sam Halliday, sam.halliday@gmail.com
 
