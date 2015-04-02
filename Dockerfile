@@ -23,12 +23,12 @@ ENV SCALA_VARIANTS 2.10.5 2.11.6
 # Package Management
 ADD https://www.virtualbox.org/download/oracle_vbox.asc /etc/oracle_vbox.asc
 RUN\
-  echo 'deb http://ppa.launchpad.net/webupd8team/java/ubuntu precise main' >> /etc/apt/sources.list &&\
+  echo 'deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main' >> /etc/apt/sources.list &&\
   echo 'deb http://http.debian.net/debian jessie contrib' >> /etc/apt/sources.list &&\
   apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886 &&\
   apt-key add /etc/oracle_vbox.asc &&\
   cat /etc/apt/sources.list | sed 's/^deb /deb-src /' >> /etc/apt/sources.list &&\
-  echo 'deb http://download.virtualbox.org/virtualbox/debian wheezy contrib' >> /etc/apt/sources.list &&\
+  echo 'deb http://download.virtualbox.org/virtualbox/debian trusty contrib' >> /etc/apt/sources.list &&\
   echo 'APT::Install-Recommends "0";' >> /etc/apt/apt.conf &&\
   echo 'APT::Install-Suggests "0";' >> /etc/apt/apt.conf &&\
   apt-get update -qq &&\
