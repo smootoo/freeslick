@@ -21,3 +21,7 @@ RUN\
     sbt updateClassifiers doc ;\
   done &&\
   rm -rf /root/freeslick
+
+ADD ci.sh /root/ci.sh
+RUN\
+  chmod a+x /root/ci.sh
