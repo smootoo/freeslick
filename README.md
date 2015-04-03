@@ -1,5 +1,7 @@
+<!--
 [![Build Status](https://api.shippable.com/projects/5504572d5ab6cc13529ad13e/badge?branchName=master)](https://app.shippable.com/projects/5504572d5ab6cc13529ad13e/builds/latest)
 [![Coverage Status](https://coveralls.io/repos/fommil/freeslick/badge.svg?branch=master)](https://coveralls.io/r/fommil/freeslick?branch=master)
+-->
 
 # FreeSlick
 
@@ -31,6 +33,15 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 
 "com.github.fommil" %% "freeslick" % "2.0.3-SNAPSHOT"
 ```
+
+# Integration Tests
+
+We have a docker image that will start up MSSQL 2000, 2005 and 2008
+and run the integration tests for your branch. We'd very much like to
+automate this as part of the Pull Request review process, but
+[we need a hardware donation](https://github.com/fommil/freeslick/issues/11).
+
+To run the tests locally, [follow the instructions on the Wiki](https://github.com/fommil/freeslick/wiki/Locally-running-the-Integration-Tests).
 
 
 # History
