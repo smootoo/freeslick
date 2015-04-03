@@ -1,1 +1,4 @@
-MSSQL.tar.gz
+*.tar.gz
+*.vmdk
+*.ovf
+pcbios.bin
