@@ -26,8 +26,12 @@ if [ -z "$BRANCH" ] ; then
     exit 1
 fi
 
+# NOTE: commenting out the MSSQL start script because we expect the
+#       caller to run it on the host (it is very flakey unless
+#       host/guest are exactly the same OS and version of virtualbox)
+
+#/root/start-mssql.sh &&\
 cd /root &&\
-/root/start-mssql.sh &&\
 git clone -b $BRANCH --single-branch https://github.com/$USERNAME/freeslick.git &&\
 cd freeslick &&\
 sbt update &&\
