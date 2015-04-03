@@ -1,7 +1,12 @@
 #!/bin/bash
 
-#VBoxManage setproperty machinefolder /root/VirtualBox
-#VBoxManage registervm /root/VirtualBox/MSSQL/MSSQL.vbox 
+cd /root/VirtualBox
+tar xf MSSQL.tar.gz
+
+sed -i 's|/dev/shm|/root|' /root/VirtualBox/MSSQL/MSSQL.vbox
+
+VBoxManage setproperty machinefolder /root/VirtualBox
+VBoxManage registervm /root/VirtualBox/MSSQL/MSSQL.vbox 
 VBoxManage snapshot MSSQL restore "MSSQL Up"
 VBoxManage startvm --type headless MSSQL
 

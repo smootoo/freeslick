@@ -13,7 +13,7 @@ MAINTAINER Sam Halliday, sam.halliday@gmail.com
 
 # We have to use Oracle's JDK 6 because Jessie does not have OpenJDK 6
 # (and we don't want to restrict FreeSlick to JDK7+)
-ENV JAVA_VARIANT java-6-oracle
+ENV JAVA_VARIANT java-6-openjdk-amd64
 ENV JAVA_HOME /usr/lib/jvm/${JAVA_VARIANT}/jre/
 ENV JDK_HOME /usr/lib/jvm/${JAVA_VARIANT}/
 ENV SBT_VARIANTS 0.13.8
@@ -23,11 +23,7 @@ ENV SCALA_VARIANTS 2.10.5 2.11.6
 # Package Management
 ADD https://www.virtualbox.org/download/oracle_vbox.asc /etc/oracle_vbox.asc
 RUN\
-  echo 'deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main' >> /etc/apt/sources.list &&\
-  echo 'deb http://http.debian.net/debian jessie contrib' >> /etc/apt/sources.list &&\
-  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886 &&\
   apt-key add /etc/oracle_vbox.asc &&\
-  cat /etc/apt/sources.list | sed 's/^deb /deb-src /' >> /etc/apt/sources.list &&\
   echo 'deb http://download.virtualbox.org/virtualbox/debian trusty contrib' >> /etc/apt/sources.list &&\
   echo 'APT::Install-Recommends "0";' >> /etc/apt/apt.conf &&\
   echo 'APT::Install-Suggests "0";' >> /etc/apt/apt.conf &&\
@@ -41,11 +37,7 @@ RUN\
 #
 # Alternative Javas by inspired by https://github.com/dockerfile/java/
 RUN\
-  for V in 6 ; do\
-    echo oracle-java${V}-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections ;\
-  done &&\
-  apt-get install -y oracle-java6-installer &&\
-  update-java-alternatives -s ${JAVA_VARIANT} &&\
+  apt-get install -y openjdk-6-jdk &&\
   apt-get clean
 
 ################################################
@@ -81,12 +73,7 @@ ADD .freetds.conf /root/.freetds.conf
 RUN\
   apt-get install -qq virtualbox-4.3 kmod freetds-bin bzip2 &&\
   apt-get clean &&\
-  ln -s zero /dev/vboxdrv &&\
-  ln -s zero /dev/vboxdrvu &&\
-  VBoxManage setproperty machinefolder /root/VirtualBox &&\
-  chmod a+x /root/start-mssql.sh /root/await-mssql.sh &&\
-  VBoxManage registervm /root/VirtualBox/MSSQL/MSSQL.vbox &&\
-  rm /dev/vboxdrv /dev/vboxdrvu
+  chmod a+x /root/start-mssql.sh /root/await-mssql.sh
 
 ################################################
 # Shippable
