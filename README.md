@@ -40,6 +40,11 @@ highly time-consuming.
    `vboxmanage modifyhd /path/to/thedisk.vdi --compact` (you will need to convert
    the VHD to VDI format first).
 
+If you want to use the `start-mssql-sh` script in the
+`fommil/freeslick:build` image then use VirtualBox to create a
+snapshot named `MSSQL Up` when the machine is booted up and all
+services are available.
+
 ## MSSQL 2000 (Desktop Edition)
 
 1. Download [SQL Server 2000 Desktop Edition](http://www.microsoft.com/en-us/download/details.aspx?id=22661).
