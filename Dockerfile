@@ -11,16 +11,16 @@ MAINTAINER Sam Halliday, sam.halliday@gmail.com
 ################################################
 # FreeSlick Ivy Cache
 # (could do with using the right scala versions)
-RUN\
-  cd /root &&\
-  git clone https://github.com/fommil/freeslick.git &&\
-  cd freeslick &&\
-  for BRANCH in master ; do\
-    git reset --hard origin/$BRANCH &&\
-    git clean -xfd &&\
-    sbt updateClassifiers doc ;\
-  done &&\
-  rm -rf /root/freeslick
+# RUN\
+#   cd /root &&\
+#   git clone https://github.com/fommil/freeslick.git &&\
+#   cd freeslick &&\
+#   for BRANCH in master ; do\
+#     git reset --hard origin/$BRANCH &&\
+#     git clean -xfd &&\
+#     sbt updateClassifiers doc ;\
+#   done &&\
+#   rm -rf /root/freeslick
 
 ADD ci.sh /root/ci.sh
 RUN\

@@ -12,13 +12,16 @@
 # 2. freeslick branch name
 
 USERNAME=$1
-BRANCH=$1
+BRANCH=$2
 
-if [ -n "$USERNAME" ] ; then
+echo USERNAME=$USERNAME
+echo BRANCH=$BRANCH
+
+if [ -z "$USERNAME" ] ; then
     echo "first parameter must be a github username"
     exit 1
 fi
-if [ -n "$BRANCH" ] ; then
+if [ -z "$BRANCH" ] ; then
     echo "second parameter must be a freeslick branch name"
     exit 1
 fi
