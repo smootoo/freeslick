@@ -2,10 +2,23 @@
 
 # docker build --no-cache -t fommil/freeslick:build .
 # docker push fommil/freeslick:build
-# docker run -i -t --device=/dev/vboxdrv fommil/freeslick:build
 
-# NOTE: in order to run this docker container, the Host must have the
-#       VirtualBox version 4.3.18 (or later) DKMS modules loaded.
+# We're currently expecting the host to be running the MSSQL
+# instances, which means the CI job can be started by running, e.g.
+#
+#  docker run -it --rm --net host fommil/freeslick:build /root/ci.sh fommil master
+#
+# but we would certainly like to move towards starting MSSQL inside the container, e.g.
+#
+#  docker run -it --rm --device=/dev/vboxdrv fommil/freeslick:build /root/ci.sh fommil master
+#
+#  or (at least)
+#
+#  docker run -it --rm --privileged=true fommil/freeslick:build /root/ci.sh fommil master
+#
+# unfortunately VirtualBox is very flakey when running inside docker.
+# It seems to want the host/guest to have *exactly* the same OS and
+# virtualbox version.
 
 FROM fommil/freeslick:base
 
@@ -87,3 +100,8 @@ RUN\
   pip install --install-option="--prefix=/root/ve" pika boto glob2 &&\
   echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen &&\
   locale-gen
+
+################################################
+# CI hack until we have dedicated hardware
+ADD ci.sh /root/ci.sh
+RUN chmod a+x /root/ci.sh
