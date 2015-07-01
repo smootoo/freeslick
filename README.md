@@ -39,7 +39,7 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 We have a docker image that will start up MSSQL 2000, 2005 and 2008
 and run the integration tests for your branch. We'd very much like to
 automate this as part of the Pull Request review process, but
-[we need a hardware donation](https://github.com/fommil/freeslick/issues/11).
+[we need a hardware donation](https://github.com/smootoo/freeslick/issues/11).
 
 To run the tests locally, [follow the instructions on the Wiki](https://github.com/smootoo/freeslick/wiki/Locally-running-the-Integration-Tests).
 
