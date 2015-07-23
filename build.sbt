@@ -10,7 +10,7 @@ name := "freeslick"
 
 scalaVersion := "2.10.5"
 
-version := "2.0.3-SNAPSHOT"
+version := "3.0.0-SNAPSHOT"
 
 //resolvers += Resolver.sonatypeRepo("snapshots")
 
@@ -19,9 +19,9 @@ inConfig(IntegrationTest)(Defaults.testSettings)
 parallelExecution in IntegrationTest := false
 
 libraryDependencies ++= Seq(
-  "com.typesafe.slick"  %% "slick"                       % "2.0.3",
-  "com.typesafe.slick"  %% "slick-testkit"               % "2.0.3"  % "test;it",
-  "com.novocode"        %  "junit-interface"             % "0.10"   % "test;it",
+  "com.typesafe.slick"  %% "slick"                       % "3.0.0",
+  "com.typesafe.slick"  %% "slick-testkit"               % "3.0.0"  % "test;it",
+  "com.novocode"        %  "junit-interface"             % "0.11"   % "test;it",
   "org.scalatest"       %% "scalatest"                   % "2.2.4"  % "test;it",
   "org.scalamock"       %% "scalamock-scalatest-support" % "3.2.1"  % "test;it",
   "org.scalacheck"      %% "scalacheck"                  % "1.12.2" % "test;it",
@@ -46,7 +46,8 @@ maxErrors := 1
 
 fork := true
 
-javaOptions ++= Seq("-XX:MaxPermSize=256m", "-Xmx2g", "-XX:+UseConcMarkSweepGC")
+//TODO Sue
+javaOptions ++= Seq("-XX:MaxPermSize=256m", "-Xmx2g", "-XX:+UseConcMarkSweepGC", "-Dslick.testkit-config=test-dbs/testkit-appveyor.conf")
 
 // sbt 0.13.7 introduced awesomely fast resolution caching
 updateOptions := updateOptions.value.withCachedResolution(true)
@@ -63,7 +64,7 @@ licenses := Seq(
   "BSD 2 Clause" -> url("https://github.com/slick/slick/blob/b70a2c7289e9aa4f6e12cf7426c5a91d47e1b4bf/LICENSE.txt")
 )
 
-homepage := Some(url("http://github.com/fommil/freeslick"))
+homepage := Some(url("http://github.com/smootoo/freeslick"))
 
 publishTo <<= version { v: String =>
   val nexus = "https://oss.sonatype.org/"
@@ -79,8 +80,8 @@ credentials += Credentials(
 
 pomExtra :=
 <scm>
-  <url>git@github.com:fommil/freeslick.git</url>
-  <connection>scm:git:git@github.com:fommil/freeslick.git</connection>
+  <url>git@github.com:smootoo/freeslick.git</url>
+  <connection>scm:git:git@github.com:smootoo/freeslick.git</connection>
 </scm>
 <developers>
    <developer>
@@ -91,4 +92,8 @@ pomExtra :=
       <id>szeiger</id>
       <name>Stefan Zeiger</name>
    </developer>
+  <developer>
+     <id>smootoo</id>
+     <name>Sue Carter</name>
+  </developer>
 </developers>
