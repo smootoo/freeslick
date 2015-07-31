@@ -1,14 +1,15 @@
 <!--
-[![Build Status](https://api.shippable.com/projects/5504572d5ab6cc13529ad13e/badge?branchName=master)](https://app.shippable.com/projects/5504572d5ab6cc13529ad13e/builds/latest)
-[![Coverage Status](https://coveralls.io/repos/fommil/freeslick/badge.svg?branch=master)](https://coveralls.io/r/fommil/freeslick?branch=master)
+[![Build status](https://ci.appveyor.com/api/projects/status/mdrfd7o7067c5vcm?svg=true)](https://ci.appveyor.com/project/smootoo/freeslick)
 -->
 
 # FreeSlick
 
 [Free software](https://www.gnu.org/philosophy/free-sw.html)
 continuation of the [Slick](http://slick.typesafe.com/) MS-SQL driver,
-with a full suite of integration tests against actual MS-SQL (2000,
-2005, 2008) instances.
+with a full suite of integration tests against actual MS-SQL (2008) instances.
+We did have tests running against 2000 and 2005, but it's hard to find CI
+environments to test against and they are quite old. Let us know if you
+need a driver maintained for those versions.
 
 # Usage
 
@@ -16,7 +17,7 @@ As is normal in Slick, import the "driver" (really these are profiles)
 explicitly in order to get access to the `Database` instance:
 
 ```scala
-import freeslick.MSSQLProfile.simple._
+import freeslick.MSSQLServerProfile.api._
 ```
 
 and don't forget to pass your actual JDBC driver when creating a connection, e.g.
@@ -31,18 +32,17 @@ The artefact (currently only snapshot) is published as:
 ```scala
 resolvers += Resolver.sonatypeRepo("snapshots")
 
-"com.github.fommil" %% "freeslick" % "2.0.3-SNAPSHOT"
+"org.suecarter" %% "freeslick" % "3.0.0-SNAPSHOT"
 ```
 
 # Integration Tests
 
-We have a docker image that will start up MSSQL 2000, 2005 and 2008
-and run the integration tests for your branch. We'd very much like to
-automate this as part of the Pull Request review process, but
-[we need a hardware donation](https://github.com/smootoo/freeslick/issues/11).
+We are using AppVeyor to automate MSSQLServer tests. (https://ci.appveyor.com/project/smootoo/freeslick)
 
-To run the tests locally, [follow the instructions on the Wiki](https://github.com/smootoo/freeslick/wiki/Locally-running-the-Integration-Tests).
+To run the tests locally on a docker image, [follow the instructions on the Wiki](https://github.com/smootoo/freeslick/wiki/Locally-running-the-Integration-Tests).
 
+We leverage the excellent Slick integration tests to validate our drivers and add some of our own
+to test specific driver functionality.
 
 # History
 
