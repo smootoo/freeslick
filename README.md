@@ -1,6 +1,4 @@
-<!--
-[![Build status](https://ci.appveyor.com/api/projects/status/mdrfd7o7067c5vcm?svg=true)](https://ci.appveyor.com/project/smootoo/freeslick)
--->
+[![Build status](https://ci.appveyor.com/api/projects/status/mdrfd7o7067c5vcm?svg=true)](https://ci.appveyor.com/project/smootoo/freeslick) SQLServer 2008
 
 # FreeSlick
 
