@@ -6,7 +6,11 @@ import org.junit.runner.RunWith
 class FreeslickDriverTest(driver: TestDB) extends DriverTest(driver) {
   override def tests: Seq[Class[_ <: GenericTest[_ >: Null <: TestDB]]] = {
     super.tests :+
-      classOf[BooleanTest]
+      classOf[BooleanTest] :+
+      classOf[FreeslickJoinTest] :+
+      classOf[SubqueryTest] :+
+      classOf[UUIDTest]
+    //TODO Sue timestamps, blobs, multiple autoinc column
   }
 }
 

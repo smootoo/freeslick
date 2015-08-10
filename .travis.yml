@@ -1,0 +1,29 @@
+language: scala
+jdk:
+- openjdk7
+scala:
+- 2.10.5
+- 2.11.5
+sudo: required
+cache:
+  directories:
+  - "$HOME/.ivy2/cache"
+services:
+- docker
+before_install:
+# TZ needed for Oracle driver!
+- export TZ=Asia/Kamchatka
+- sh -v ZNonPublicDeps/install
+- docker version
+# docker is struggling in travis env. put in retry loop
+#- docker run -d -p 49160:22 -p 49161:1521 wnameless/oracle-xe-11g
+- sh -v travis/runcontainer.sh
+- docker ps
+script:
+- sbt ++$TRAVIS_SCALA_VERSION 'set javaOptions ++= Seq("-Dslick.testkit-config=test-dbs/testkit-travis.conf")' clean test it:test && sbt ++$TRAVIS_SCALA_VERSION 'set javaOptions ++= Seq("-Dslick.testkit-config=test-dbs/testkit-travis.conf")' clean coverage test it:test
+after_success:
+# coveralls can't combine travis and appveyor build yet
+#- sbt ++$TRAVIS_SCALA_VERSION coveralls
+env:
+  global:
+    secure: Ouzwf4vUPDvMqiSaLDo0PHYRADPjGPlYOAnkKbnAuzrNBJ98TKRuDP2zopQ95JpSxiKdOxX6GCmpJOAqCEQaXyYZZ6XbHijjDcVNJf9aTJf09msHiMEOhxpxn08rf9viUi/as+jq+/ngj6L7N23aiRZDJHcpXGEecWbd6eeKgl4=

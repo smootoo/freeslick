@@ -2,17 +2,11 @@ package freeslick
 
 import java.util.UUID
 
-import slick.ast.TypeUtil.:@
 import slick.dbio.DBIO
 import slick.driver._
-import slick.jdbc.meta.{ MColumn, MTable }
-import slick.ast._
-import slick.jdbc.{ JdbcModelBuilder, JdbcType, PositionedResult }
-import slick.profile._
 import slick.compiler._
 import java.sql.{ ResultSet, Timestamp, Date, Time }
 
-import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext
 import slick.ast._
 import slick.util.MacroSupport.macroSupportInterpolation
@@ -20,7 +14,6 @@ import slick.profile.{ RelationalProfile, SqlProfile, Capability }
 import slick.compiler.CompilerState
 import slick.jdbc.{ JdbcModelBuilder, JdbcType }
 import slick.jdbc.meta.{ MColumn, MTable }
-import slick.model.Model
 
 /**
  * Slick profile for Microsoft SQL Server.
@@ -45,13 +38,13 @@ trait MSSQLServerProfile extends JdbcDriver { driver =>
   override protected def computeCapabilities: Set[Capability] = (super.computeCapabilities
     - JdbcProfile.capabilities.forceInsert
     - JdbcProfile.capabilities.returnInsertOther
-    - JdbcProfile.capabilities.returnInsertKey //TODO Sue
+    - JdbcProfile.capabilities.returnInsertKey
     - SqlProfile.capabilities.sequence
     - JdbcProfile.capabilities.supportsByte
   )
 
   override protected def computeQueryCompiler =
-    super.computeQueryCompiler.addAfter(new MSSQLRewriteBooleans, QueryCompiler.relationalPhases.last).
+    super.computeQueryCompiler.addAfter(new FreeslickRewriteBooleans, QueryCompiler.relationalPhases.last).
       addBefore(new ExistsToCount, QueryCompiler.relationalPhases.head)
 
   override val columnTypes = new JdbcTypes
@@ -84,15 +77,6 @@ trait MSSQLServerProfile extends JdbcDriver { driver =>
           })
         }
       }.getOrElse { super.default }
-    }
-  }
-
-  class MSSQLRewriteBooleans extends RewriteBooleans {
-    override def rewrite(n: Node): Node = n match {
-      case Library.SilentCast(sc) :@ tpe if isBooleanLike(tpe) =>
-        sc
-      case n =>
-        super.rewrite(n)
     }
   }
 
@@ -159,6 +143,7 @@ trait MSSQLServerProfile extends JdbcDriver { driver =>
     override val timestampJdbcType = new TimestampJdbcType
     override val uuidJdbcType = new UUIDJdbcType {
       override def sqlTypeName(size: Option[RelationalProfile.ColumnOption.Length]) = "UNIQUEIDENTIFIER"
+      override def valueToSQLLiteral(uuid: UUID) = s"'${uuid.toString}'"
     }
     /* SQL Server does not have a proper BOOLEAN type. The suggested workaround is
      * BIT with constants 1 and 0 for TRUE and FALSE. */

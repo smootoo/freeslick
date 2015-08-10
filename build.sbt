@@ -10,7 +10,7 @@ name := "freeslick"
 
 crossScalaVersions := Seq("2.11.5", "2.10.5")
 
-version := "3.0.3"
+version := "3.0.3.1-SNAPSHOT"
 
 //resolvers += Resolver.sonatypeRepo("snapshots")
 
@@ -29,13 +29,14 @@ libraryDependencies ++= Seq(
   "ch.qos.logback"       % "logback-classic"             % "1.1.2"    % "test;it",
   "com.zaxxer" % "HikariCP-java6" % "2.3.7" % "test;it",
   // jTDS 2.3.x is JDK 1.7+ so stick with 1.2.x
-  "net.sourceforge.jtds" % "jtds"                        % "1.2.8"    % "test;it",
+  "net.sourceforge.jtds" % "jtds"                        % "1.2.8"    % "optional;test;it",
   // add the below dependencies to test any new driver tests against other db drivers
   "com.h2database"       % "h2"                          % "1.3.170"  % "test;it",
-  "org.xerial"           % "sqlite-jdbc"                 % "3.8.7"    % "test;it",
   "org.apache.derby"     % "derby"                       % "10.9.1.0" % "test;it",
   "org.hsqldb"           % "hsqldb"                      % "2.2.8"    % "test;it"
-)
+) ++ sys.env.get("APPVEYOR").map(_ => Seq()).getOrElse(Seq( //Don't depend on non-public jars in APPVeyor environment
+  "com.oracle"           % "ojdbc7"                      % "12.1.0.2" % "optional;test;it"
+))
 
 scalacOptions in Compile ++= Seq(
   "-encoding", "UTF-8", "-target:jvm-1.6", "-feature", "-deprecation",
