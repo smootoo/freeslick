@@ -51,7 +51,7 @@ trait MSSQLServerProfile extends JdbcDriver { driver =>
   )
 
   override protected def computeQueryCompiler =
-    super.computeQueryCompiler.addAfter(Phase.rewriteBooleans, QueryCompiler.relationalPhases.last).
+    super.computeQueryCompiler.addAfter(new MSSQLRewriteBooleans, QueryCompiler.relationalPhases.last).
       addBefore(new ExistsToCount, QueryCompiler.relationalPhases.head)
 
   override val columnTypes = new JdbcTypes
@@ -84,6 +84,15 @@ trait MSSQLServerProfile extends JdbcDriver { driver =>
           })
         }
       }.getOrElse { super.default }
+    }
+  }
+
+  class MSSQLRewriteBooleans extends RewriteBooleans {
+    override def rewrite(n: Node): Node = n match {
+      case Library.SilentCast(sc) :@ tpe if isBooleanLike(tpe) =>
+        sc
+      case n =>
+        super.rewrite(n)
     }
   }
 
