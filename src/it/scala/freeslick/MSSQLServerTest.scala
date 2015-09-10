@@ -11,7 +11,7 @@ import slick.util.Logging
 import scala.concurrent.ExecutionContext
 
 @RunWith(classOf[Testkit])
-class MSSQLServer2008Test extends DriverTest(MSSQLServerTest.MSSQLServer2008Test) {
+class MSSQLServer2008Test extends FreeslickDriverTest(MSSQLServerTest.MSSQLServer2008Test) {
   override def tests = {
     super.tests
       .filterNot(_ == classOf[testkit.tests.ModelBuilderTest])

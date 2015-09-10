@@ -20,14 +20,19 @@ parallelExecution in IntegrationTest := false
 
 libraryDependencies ++= Seq(
   "com.typesafe.slick"  %% "slick"                       % "3.0.0",
-  "com.typesafe.slick"  %% "slick-testkit"               % "3.0.0"  % "test;it",
-  "com.novocode"        %  "junit-interface"             % "0.11"   % "test;it",
-  "org.scalatest"       %% "scalatest"                   % "2.2.4"  % "test;it",
-  "org.scalamock"       %% "scalamock-scalatest-support" % "3.2.1"  % "test;it",
-  "org.scalacheck"      %% "scalacheck"                  % "1.12.2" % "test;it",
-  "ch.qos.logback"       % "logback-classic"             % "1.1.2"  % "test;it",
+  "com.typesafe.slick"  %% "slick-testkit"               % "3.0.0"    % "test;it",
+  "com.novocode"         % "junit-interface"             % "0.11"     % "test;it",
+  "org.scalatest"       %% "scalatest"                   % "2.2.4"    % "test;it",
+  "org.scalamock"       %% "scalamock-scalatest-support" % "3.2.1"    % "test;it",
+  "org.scalacheck"      %% "scalacheck"                  % "1.12.2"   % "test;it",
+  "ch.qos.logback"       % "logback-classic"             % "1.1.2"    % "test;it",
   // jTDS 2.3.x is JDK 1.7+ so stick with 1.2.x
-  "net.sourceforge.jtds" % "jtds"                        % "1.2.8"  % "test;it"
+  "net.sourceforge.jtds" % "jtds"                        % "1.2.8"    % "test;it",
+  // add the below dependencies to test any new driver tests against other db drivers
+  "com.h2database"       % "h2"                          % "1.3.170"  % "test;it",
+  "org.xerial"           % "sqlite-jdbc"                 % "3.8.7"    % "test;it",
+  "org.apache.derby"     % "derby"                       % "10.9.1.0" % "test;it",
+  "org.hsqldb"           % "hsqldb"                      % "2.2.8"    % "test;it"
 )
 
 scalacOptions in Compile ++= Seq(
