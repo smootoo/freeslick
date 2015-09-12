@@ -2,6 +2,8 @@
 
 # FreeSlick
 
+Available on [maven central](http://search.maven.org/#artifactdetails|org.suecarter|freeslick_2.11|3.0.3|jar)
+
 [Free software](https://www.gnu.org/philosophy/free-sw.html)
 continuation of the [Slick](http://slick.typesafe.com/) MS-SQL driver,
 with a full suite of integration tests against actual MS-SQL (2008) instances.
@@ -28,9 +30,7 @@ val db = Database.forURL(url, driver = "net.sourceforge.jtds.jdbc.Driver")
 The artefact (currently only snapshot) is published as:
 
 ```scala
-resolvers += Resolver.sonatypeRepo("snapshots")
-
-"org.suecarter" %% "freeslick" % "3.0.0-SNAPSHOT"
+"org.suecarter" %% "freeslick" % "3.0.3"
 ```
 
 # Integration Tests

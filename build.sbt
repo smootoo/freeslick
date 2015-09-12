@@ -8,24 +8,26 @@ organization := "org.suecarter"
 
 name := "freeslick"
 
-scalaVersion := "2.10.5"
+crossScalaVersions := Seq("2.11.5", "2.10.5")
 
-version := "3.0.0-SNAPSHOT"
+version := "3.0.3"
 
 //resolvers += Resolver.sonatypeRepo("snapshots")
 
 configs(IntegrationTest)
 inConfig(IntegrationTest)(Defaults.testSettings)
 parallelExecution in IntegrationTest := false
+testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v", "-s", "-a", "-Djava.awt.headless=true")
 
 libraryDependencies ++= Seq(
-  "com.typesafe.slick"  %% "slick"                       % "3.0.0",
-  "com.typesafe.slick"  %% "slick-testkit"               % "3.0.0"    % "test;it",
+  "com.typesafe.slick"  %% "slick"                       % "3.0.3",
+  "com.typesafe.slick"  %% "slick-testkit"               % "3.0.3"    % "test;it",
   "com.novocode"         % "junit-interface"             % "0.11"     % "test;it",
   "org.scalatest"       %% "scalatest"                   % "2.2.4"    % "test;it",
   "org.scalamock"       %% "scalamock-scalatest-support" % "3.2.1"    % "test;it",
   "org.scalacheck"      %% "scalacheck"                  % "1.12.2"   % "test;it",
   "ch.qos.logback"       % "logback-classic"             % "1.1.2"    % "test;it",
+  "com.zaxxer" % "HikariCP-java6" % "2.3.7" % "test;it",
   // jTDS 2.3.x is JDK 1.7+ so stick with 1.2.x
   "net.sourceforge.jtds" % "jtds"                        % "1.2.8"    % "test;it",
   // add the below dependencies to test any new driver tests against other db drivers
