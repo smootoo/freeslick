@@ -7,7 +7,7 @@
 
 # FreeSlick
 
-Available on [maven central](http://search.maven.org/#artifactdetails|org.suecarter|freeslick_2.11|3.0.3|jar)
+Available on [maven central](http://search.maven.org/#artifactdetails|org.suecarter|freeslick_2.11|3.0.3.1|jar)
 
 [Free software](https://www.gnu.org/philosophy/free-sw.html)
 continuation of the [Slick](http://slick.typesafe.com/) MS-SQL driver,
