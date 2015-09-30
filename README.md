@@ -1,9 +1,9 @@
 |Driver|Build status|
 |------|-----------:|
 |SQLServer 2008|[![Build status](https://ci.appveyor.com/api/projects/status/mdrfd7o7067c5vcm?svg=true)](https://ci.appveyor.com/project/smootoo/freeslick)|
-|Oracle 11g|[![Build Status](https://travis-ci.org/smootoo/freeslick.svg?branch=oracle)](https://travis-ci.org/smootoo/freeslick)|
+|Oracle 11g|[![Build Status](https://travis-ci.org/smootoo/freeslick.svg?branch=master)](https://travis-ci.org/smootoo/freeslick)|
 
-[![Coverage Status](https://coveralls.io/repos/smootoo/freeslick/badge.svg?branch=oracle)](https://coveralls.io/r/smootoo/freeslick?branch=oracle)|
+[![Coverage Status](https://coveralls.io/repos/smootoo/freeslick/badge.svg?branch=master)](https://coveralls.io/r/smootoo/freeslick?branch=master)
 
 # FreeSlick
 
@@ -16,7 +16,7 @@ We did have tests running against 2000 and 2005, but it's hard to find CI
 environments to test against and they are quite old. Let us know if you
 need a driver maintained for those versions.
 
-We have added an Oracle driver as well now.
+We have added an Oracle driver as well now. This has been written from scratch.
 
 If there is some driver combination you are looking for, that isn't covered yet. Let us know.
 
@@ -29,6 +29,8 @@ explicitly in order to get access to the `Database` instance:
 import freeslick.MSSQLServerProfile.api._
 ```
 
+The Oracle profile is at freeslick.OracleProfile
+
 and don't forget to pass your actual JDBC driver when creating a connection, e.g.
 
 ```scala
@@ -39,7 +41,7 @@ val db = Database.forURL(url, driver = "net.sourceforge.jtds.jdbc.Driver")
 The artefact is published as:
 
 ```scala
-"org.suecarter" %% "freeslick" % "3.0.3"
+"org.suecarter" %% "freeslick" % "3.0.3.1"
 ```
 
 # Integration Tests
