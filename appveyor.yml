@@ -48,7 +48,7 @@ install:
 build_script:
   - sbt clean compile test:compile it:compile
 test_script:
-  - sbt set" javaOptions ++= "Seq(\"-Dslick.testkit-config=test-dbs/testkit-appveyor.conf\") test it:test
+  - sbt set" javaOptions ++= "Seq(\"-Dslick.testkit-config=test-dbs/testkit-appveyor.conf\") test +it:test
 cache:
   - C:\sbt\
   - C:\Users\appveyor\.m2

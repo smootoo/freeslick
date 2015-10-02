@@ -1,13 +1,9 @@
 package freeslick
 
 import com.typesafe.slick.testkit
-import com.typesafe.slick.testkit.tests.SequenceTest
+import com.typesafe.slick.testkit.tests._
 import com.typesafe.slick.testkit.util._
 import org.junit.runner.RunWith
-import slick.dbio._
-import slick.jdbc.meta.MTable
-import slick.jdbc.{StaticQuery => Q}
-import slick.profile.SqlProfile
 import slick.util.Logging
 
 import scala.concurrent.ExecutionContext
@@ -17,6 +13,7 @@ class OracleITTest extends FreeslickDriverTest(OracleTest.Oracle11gTest) {
   override def tests = {
     super.tests
       .filterNot(_ == classOf[testkit.tests.JoinTest]) // Replaced with a FreeslickJoinTest
+    //Seq(classOf[FreeslickGroupByTest])
   }
 }
 
@@ -34,21 +31,20 @@ object OracleTest extends Logging {
     }
 
 
-    def localSequences(implicit ec: ExecutionContext): DBIO[Vector[String]] = {
+    override def localSequences(implicit ec: ExecutionContext): DBIO[Vector[String]] = {
       // user_sequences much quicker than going to meta if you don't know the schema they are going to be in
       sql"select sequence_Name from user_sequences".as[String]
     }
 
-    override def getLocalSequences(implicit session: profile.Backend#Session): List[String] = {
-      blockingRunOnSession(ec => localSequences(ec)).toList
-    }
-
-    override def dropUserArtifacts(implicit session: profile.Backend#Session) = {
-      val localTables = getLocalTables
-      localTables.foreach(t => (Q.u + s"drop table " + driver.quoteIdentifier(t) + " cascade constraints").execute)
-      val localSequences = getLocalSequences
-      localSequences.foreach(s => (Q.u + "drop sequence " + driver.quoteIdentifier(s)).execute)
-    }
+    override def dropUserArtifacts(implicit session: profile.Backend#Session) =
+      blockingRunOnSession { implicit ec =>
+           for {
+             tables <- localTables
+             sequences <- localSequences
+             _ <- DBIO.seq(tables.map(t => sqlu"drop table #${driver.quoteIdentifier(t)} cascade constraints") ++
+                            sequences.map(s => sqlu"drop sequence #${driver.quoteIdentifier(s)}"): _*)
+           } yield ()
+         }
 
     override lazy val capabilities = driver.capabilities + TestDB.capabilities.plainSql
   }

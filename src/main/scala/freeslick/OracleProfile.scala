@@ -1,6 +1,6 @@
 package freeslick
 
-import java.sql.{ PreparedStatement, Blob }
+import java.sql.{ ResultSet, PreparedStatement, Blob }
 import java.util.UUID
 
 import com.typesafe.config.{ Config, ConfigException }
@@ -9,8 +9,10 @@ import slick.driver._
 import slick.jdbc.meta._
 import slick.jdbc._
 import slick.lifted._
-import slick.model
+import slick.relational.ResultConverter
+import slick.{ SlickException, model }
 import slick.compiler._
+import slick.util.ConstArray
 
 import scala.concurrent.ExecutionContext
 import slick.ast._
@@ -31,7 +33,7 @@ import slick.compiler.CompilerState
  * - JdbcProfile.capabilities.distinguishesIntTypes
  *
  */
-trait OracleProfile extends JdbcDriver {
+trait OracleProfile extends JdbcDriver with DriverRowNumberPagination {
   driver =>
 
   override protected def computeCapabilities: Set[Capability] = (super.computeCapabilities
@@ -44,7 +46,7 @@ trait OracleProfile extends JdbcDriver {
   )
 
   override protected def computeQueryCompiler =
-    super.computeQueryCompiler.addAfter(new FreeslickRewriteBooleans, QueryCompiler.relationalPhases.last)
+    super.computeQueryCompiler.addAfter(new FreeslickRewriteBooleans, QueryCompiler.sqlPhases.last)
 
   override val columnTypes = new JdbcTypes
 
@@ -62,20 +64,18 @@ trait OracleProfile extends JdbcDriver {
   override def createSchemaActionExtensionMethods(schema: SchemaDescription): SchemaActionExtensionMethods =
     new SchemaActionExtensionMethodsImpl(schema)
 
-  override def createDDLInvoker(ddl: SchemaDescription) = new DDLInvoker(ddl)
-
   override def defaultTables(implicit ec: ExecutionContext): DBIO[Seq[MTable]] = {
     import driver.api._
     val userQ = Functions.user.result
     userQ.flatMap(user => MTable.getTables(None, Some(user), None, Some(Seq("TABLE"))))
   }
 
-  override def defaultSqlTypeName(tmd: JdbcType[_], size: Option[RelationalProfile.ColumnOption.Length]): String = tmd.sqlType match {
+  override def defaultSqlTypeName(tmd: JdbcType[_], sym: Option[FieldSymbol]): String = tmd.sqlType match {
     case java.sql.Types.TIME => "DATE"
     case java.sql.Types.DOUBLE => "DOUBLE PRECISION"
     case java.sql.Types.BIGINT => "NUMBER(19)"
     case java.sql.Types.TINYINT => "NUMBER(3)"
-    case _ => super.defaultSqlTypeName(tmd, size)
+    case _ => super.defaultSqlTypeName(tmd, sym)
   }
 
   protected lazy val tableTableSpace = try {
@@ -128,9 +128,9 @@ trait OracleProfile extends JdbcDriver {
           b"$left in ($right)"
           b"\)"
         case op @ Apply(sym: Library.SqlOperator, _) =>
-          super.expr(op.nodeMapChildren {
-            case ch @ Comprehension(_, _, _, orderBy, _, _, _) if orderBy.nonEmpty => {
-              ch.copy(orderBy = Seq()) //sub-queries can't contain order by clauses
+          super.expr(op.mapChildren {
+            case ch @ Comprehension(_, _, _, _, _, orderBy, _, _, _, _) if orderBy.nonEmpty => {
+              ch.copy(orderBy = ConstArray.empty) //sub-queries can't contain order by clauses
             }
             case x => x
           }, skipParens)
@@ -254,20 +254,32 @@ trait OracleProfile extends JdbcDriver {
   }
 
   class SchemaActionExtensionMethodsImpl(schema: SchemaDescription) extends super.SchemaActionExtensionMethodsImpl(schema) {
-    override def create: DriverAction[Unit, NoStream, Effect.Schema] = new SimpleJdbcDriverAction[Unit]("schema.create", schema.createStatements.toSeq) {
-      def run(ctx: Backend#Context, sql: Iterable[String]): Unit =
-        //need withStatement not withPreparedStatement because of synthetic autoinc with sequences
-        for (s <- sql)
-          ctx.session.withStatement()(stmt => stmt.execute(s))
-    }
+    override def create: DriverAction[Unit, NoStream, Effect.Schema] =
+      new SimpleJdbcDriverAction[Unit]("schema.create", schema.createStatements.toVector) {
+        def run(ctx: Backend#Context, sql: Vector[String]): Unit =
+          //need withStatement not withPreparedStatement because of synthetic autoinc with sequences
+          for (s <- sql)
+            ctx.session.withStatement()(stmt => stmt.execute(s))
+      }
   }
 
-  class DDLInvoker(ddl: DDL) extends super.DDLInvoker(ddl) {
-    override def create(implicit session: Backend#Session): Unit = session.withTransaction {
-      for (s <- ddl.createStatements)
-        session.withStatement()(stmt => stmt.execute(s))
-    }
-  }
+  /**
+   * Because in Oracle '' and null are the same thing, on a non-null column,
+   * when null comes back from read, turn into ""
+   */
+  override def createBaseResultConverter[T](ti: JdbcType[T], name: String, idx: Int): ResultConverter[JdbcResultConverterDomain, T] =
+    (ti.scalaType match {
+      case ScalaBaseType.stringType => new BaseResultConverter[String](ti.asInstanceOf[JdbcType[String]], name, idx) {
+        override def read(pr: ResultSet) = {
+          val v = ti.getValue(pr, idx)
+          if (v.asInstanceOf[AnyRef] eq null)
+            ""
+          else
+            v
+        }
+      }
+      case _ => SpecializedJdbcResultConverter.base(ti, name, idx)
+    }).asInstanceOf[ResultConverter[JdbcResultConverterDomain, T]]
 
   class JdbcTypes extends super.JdbcTypes {
     override val booleanJdbcType = new BooleanJdbcType
@@ -291,7 +303,7 @@ trait OracleProfile extends JdbcDriver {
     override val uuidJdbcType = new UUIDJdbcType {
       override def sqlType = java.sql.Types.BINARY
 
-      override def sqlTypeName(size: Option[RelationalProfile.ColumnOption.Length]) = "RAW(16)"
+      override def sqlTypeName(sym: Option[FieldSymbol]) = "RAW(16)"
 
       override def valueToSQLLiteral(value: UUID): String =
         "HEXTORAW('" + value.toString.replace("-", "") + "')"
