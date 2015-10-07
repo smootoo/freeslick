@@ -1,4 +1,4 @@
-package freeslick
+package freeslick.testkit
 
 import com.typesafe.slick.testkit.util.{AsyncTest, JdbcTestDB}
 

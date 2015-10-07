@@ -1,7 +1,6 @@
-package freeslick
+package freeslick.testkit
 
 import com.typesafe.slick.testkit.util.{AsyncTest, JdbcTestDB}
-import slick.jdbc.GetResult
 
 class BooleanTest extends AsyncTest[JdbcTestDB] {
 

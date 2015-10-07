@@ -1,6 +1,6 @@
 language: scala
-jdk:
-- openjdk7
+#jdk:
+#- openjdk7
 scala:
 - 2.10.5
 - 2.11.5
@@ -17,7 +17,8 @@ before_install:
 - docker version
 # docker is struggling in travis env. put in retry loop
 #- docker run -d -p 49160:22 -p 49161:1521 wnameless/oracle-xe-11g
-- sh -v travis/runcontainer.sh
+- sh -v travis/runcontainer.sh oracle
+- sh -v travis/runcontainer.sh db2
 - docker ps
 script:
 - sbt ++$TRAVIS_SCALA_VERSION 'set javaOptions ++= Seq("-Dslick.testkit-config=test-dbs/testkit-travis.conf")' clean test +it:test && sbt ++$TRAVIS_SCALA_VERSION 'set javaOptions ++= Seq("-Dslick.testkit-config=test-dbs/testkit-travis.conf")' clean coverage test it:test

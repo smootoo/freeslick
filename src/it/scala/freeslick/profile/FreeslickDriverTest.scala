@@ -1,18 +1,24 @@
-package freeslick
+package freeslick.profile
 
+import com.typesafe.slick.testkit.tests._
 import com.typesafe.slick.testkit.util._
+import freeslick.testkit._
 import org.junit.runner.RunWith
 
 class FreeslickDriverTest(driver: TestDB) extends DriverTest(driver) {
   override def tests: Seq[Class[_ <: GenericTest[_ >: Null <: TestDB]]] = {
     super.tests :+
       classOf[BooleanTest] :+
+      classOf[FetchOffsetTest] :+
       classOf[FreeslickJoinTest] :+
       classOf[FreeslickSubqueryTest] :+
       classOf[UUIDTest] :+
       classOf[FetchOffsetTest] :+
-      classOf[FreeslickGroupByTest]
-    //TODO Sue timestamps, blobs, multiple autoinc column
+      classOf[FreeslickGroupByTest] :+
+      classOf[FreeslickMutateTest] :+
+      classOf[JDBCFunctionTest]
+    //TODO Sue timestamps, blobs, multiple autoinc column, all the jdbcfunctions
+    //Seq(classOf[UUIDTest])
   }
 }
 

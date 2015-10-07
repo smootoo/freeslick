@@ -1,14 +1,13 @@
-package freeslick
+package freeslick.testkit
 
 import com.typesafe.slick.testkit.util.{AsyncTest, RelationalTestDB}
-import slick.driver.{H2Driver, PostgresDriver}
 
 class FreeslickGroupByTest extends AsyncTest[RelationalTestDB] {
 
   import tdb.profile.api._
 
   def testGroupBy = {
-    class T(tag: Tag) extends Table[(Int, Option[Int], Int)](tag, "t3") {
+    class T(tag: Tag) extends Table[(Int, Option[Int], Int)](tag, "t4") {
       def a = column[Int]("a")
 
       def b = column[Option[Int]]("b")

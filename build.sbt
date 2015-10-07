@@ -10,9 +10,10 @@ name := "freeslick"
 
 crossScalaVersions := Seq("2.11.5", "2.10.5")
 
-version := "3.1.0"
+version := "3.1.0.1-SNAPSHOT"
 
 //resolvers += Resolver.sonatypeRepo("snapshots")
+resolvers += Resolver.mavenLocal
 
 configs(IntegrationTest)
 inConfig(IntegrationTest)(Defaults.testSettings)
@@ -36,7 +37,8 @@ libraryDependencies ++= Seq(
   "org.apache.derby"     % "derby"                       % "10.9.1.0" % "test;it",
   "org.hsqldb"           % "hsqldb"                      % "2.2.8"    % "test;it"
 ) ++ sys.env.get("APPVEYOR").map(_ => Seq()).getOrElse(Seq( //Don't depend on non-public jars in APPVeyor environment
-  "com.oracle"           % "ojdbc7"                      % "12.1.0.2" % "optional;test;it"
+  "com.oracle"           % "ojdbc7"                      % "12.1.0.2" % "optional;test;it",
+  "com.ibm"              % "db2jcc4"                     % "4.19.26"  % "optional;test;it"
 ))
 
 scalacOptions in Compile ++= Seq(

@@ -1,24 +1,24 @@
 package freeslick
 
-import java.sql.{ ResultSet, PreparedStatement, Blob }
+import java.sql.{ Blob, PreparedStatement, ResultSet }
 import java.util.UUID
 
 import com.typesafe.config.{ Config, ConfigException }
-import slick.dbio.{ Effect, NoStream, DBIO }
+import freeslick.profile.utils._
+import slick.ast._
+import slick.compiler.{ CompilerState, _ }
+import slick.dbio.{ DBIO, Effect, NoStream }
 import slick.driver._
-import slick.jdbc.meta._
 import slick.jdbc._
+import slick.jdbc.meta._
 import slick.lifted._
+import slick.model
+import slick.profile.Capability
 import slick.relational.ResultConverter
-import slick.{ SlickException, model }
-import slick.compiler._
 import slick.util.ConstArray
+import slick.util.MacroSupport.macroSupportInterpolation
 
 import scala.concurrent.ExecutionContext
-import slick.ast._
-import slick.util.MacroSupport.macroSupportInterpolation
-import slick.profile.{ RelationalProfile, Capability }
-import slick.compiler.CompilerState
 
 /**
  * Slick profile for Oracle.
@@ -33,7 +33,8 @@ import slick.compiler.CompilerState
  * - JdbcProfile.capabilities.distinguishesIntTypes
  *
  */
-trait OracleProfile extends JdbcDriver with DriverRowNumberPagination {
+trait OracleProfile extends JdbcDriver with DriverRowNumberPagination with FreeslickSequenceDDLBuilder
+    with UniqueConstraintIndexesBuilder with TableSpaceConfig {
   driver =>
 
   override protected def computeCapabilities: Set[Capability] = (super.computeCapabilities
@@ -78,18 +79,6 @@ trait OracleProfile extends JdbcDriver with DriverRowNumberPagination {
     case _ => super.defaultSqlTypeName(tmd, sym)
   }
 
-  protected lazy val tableTableSpace = try {
-    connectionConfig.map(_.getString("tableTableSpace"))
-  } catch {
-    case _: ConfigException.Missing => None
-  }
-
-  protected lazy val indexTableSpace = try {
-    connectionConfig.map(_.getString("indexTableSpace"))
-  } catch {
-    case _: ConfigException.Missing => None
-  }
-
   class ModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(implicit ec: ExecutionContext) extends JdbcModelBuilder(mTables, ignoreInvalidDefaults) {
     override def createColumnBuilder(tableBuilder: TableBuilder, meta: MColumn): ColumnBuilder = new ColumnBuilder(tableBuilder, meta) {
       final val OracleStringPattern = """^'(.*)' *$""".r
@@ -120,7 +109,7 @@ trait OracleProfile extends JdbcDriver with DriverRowNumberPagination {
         case Library.CurrentValue(SequenceNode(name)) => b"`$name.currval"
         case RowNumber(by) =>
           b"row_number() over("
-          if (by.isEmpty) b"order by (select 1 from dual)"
+          if (by.isEmpty) b"order by 1"
           else buildOrderByClause(by)
           b")"
         case Library.==(left: ProductNode, right: ProductNode) =>
@@ -157,41 +146,10 @@ trait OracleProfile extends JdbcDriver with DriverRowNumberPagination {
   }
 
   class SequenceDDLBuilder[T](seq: Sequence[T]) extends super.SequenceDDLBuilder(seq) {
-    override def buildDDL: DDL = {
-      val b = new StringBuilder append "create sequence " append quoteIdentifier(seq.name)
-      seq._increment.foreach {
-        b append " increment by " append _
-      }
-      seq._minValue.foreach {
-        b append " minvalue " append _
-      }
-      seq._maxValue.foreach {
-        b append " maxvalue " append _
-      }
-      seq._start.foreach {
-        b append " start with " append _
-      }
-      if (seq._cycle) {
-        b append " cycle"
-        //TODO Sue add nocache/cache size option
-        val cacheSize = 20 // Oracle default http://www.dba-oracle.com/t_sequence_caching.htm
-        for {
-          maxValue <- seq._maxValue
-          minValue <- seq._minValue
-        } yield {
-          try {
-            val cycleSize = math.abs(maxValue.toString.toInt - minValue.toString.toInt)
-            if (cacheSize > cycleSize) b append " cache " append cycleSize
-          } catch {
-            case _: Exception => //if max and min aren't convertible to ints, nothing to put here
-          }
-        }
-      }
-      DDL(b.toString, "drop sequence " + quoteIdentifier(seq.name))
-    }
+    override def buildDDL: DDL = buildSeqDDL(seq)
   }
 
-  class TableDDLBuilder(table: Table[_]) extends super.TableDDLBuilder(table) {
+  class TableDDLBuilder(table: Table[_]) extends super.TableDDLBuilder(table) with UniqueConstraintIndexes {
     override protected def createPhase1 = Iterable(createTable) ++ primaryKeys.map(createPrimaryKey) ++ indexes.flatMap(createIndexStmts)
 
     override protected def createPhase2 = {
@@ -220,34 +178,24 @@ trait OracleProfile extends JdbcDriver with DriverRowNumberPagination {
       sb append ") references " append quoteTableName(fk.targetTable) append "("
       addForeignKeyColumnList(fk.linearizedTargetColumnsForOriginalTargetTable, sb, fk.targetTable.tableName)
       import model.ForeignKeyAction._
-      sb append ") " append (fk.onUpdate match {
-        case NoAction => "" //TODO Sue must be more
-        case _ => "on update " + fk.onDelete.action
-      })
-      sb append (fk.onDelete match {
-        case NoAction => "" //TODO Sue must be more
-        case _ => " on delete " + fk.onDelete.action
-      })
-    }
-
-    protected def createIndexStmts(idx: Index): Seq[String] = {
-      val indexStmt = super.createIndex(idx) + indexTableSpace.map(t => s" tablespace $t").getOrElse("")
-      /* Adding unique index does not imply a unique constraint and this is needed for any foreign keys,
-       * so add constraint explicitly. Not enough to just add unique constraint. Doesn't always add an
-       * index. */ //TODO Sue add test to show this
-      if (idx.unique) {
-        val sb = new StringBuilder
-        sb append "ALTER TABLE " append quoteIdentifier(table.tableName) append " ADD "
-        sb append "CONSTRAINT " append quoteIdentifier(idx.name + "_cons") append " UNIQUE("
-        addIndexColumnList(idx.on, sb, idx.table.tableName)
-        sb append ")"
-        Seq(indexStmt, sb.toString())
-      } else Seq(indexStmt)
+      sb append ") "
+      def oracleFKActionDDL(when: String, action: slick.model.ForeignKeyAction) =
+        action match {
+          case NoAction => "" //Oracle default is No Action. Can't specify explicitly
+          case _ => s" $when  ${action.action}"
+        }
+      sb append oracleFKActionDDL("on update", fk.onUpdate)
+      sb append oracleFKActionDDL("on delete", fk.onDelete)
     }
 
     override def createPrimaryKey(pk: PrimaryKey) = {
       super.createPrimaryKey(pk) + indexTableSpace.map(t => s" using index tablespace $t").getOrElse("")
     }
+
+    override def createIndex(idx: Index) = {
+      super.createIndex(idx) + indexTableSpace.map(t => s" tablespace $t").getOrElse("")
+    }
+
     override def createTable: String = {
       super.createTable + tableTableSpace.map(t => s" tablespace $t").getOrElse("")
     }
@@ -310,7 +258,6 @@ trait OracleProfile extends JdbcDriver with DriverRowNumberPagination {
     }
 
   }
-  def connectionConfig: Option[Config] = None
 }
 
 object OracleProfile extends OracleProfile

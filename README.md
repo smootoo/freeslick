@@ -1,7 +1,8 @@
-|Driver|Build status|
-|------|-----------:|
-|SQLServer 2008|[![Build status](https://ci.appveyor.com/api/projects/status/mdrfd7o7067c5vcm/branch/master?svg=true)](https://ci.appveyor.com/project/smootoo/freeslick/branch/master)|
-|Oracle 11g|[![Build Status](https://travis-ci.org/smootoo/freeslick.svg?branch=master)](https://travis-ci.org/smootoo/freeslick/branches)|
+|Profile|Build status|JDBC Driver|
+|-------|-----------:|-----------|
+|SQLServer 2008|[![Build status](https://ci.appveyor.com/api/projects/status/mdrfd7o7067c5vcm?svg=true)](https://ci.appveyor.com/project/smootoo/freeslick)|jtds:1.2.8| 
+|Oracle 11g|[![Build Status](https://travis-ci.org/smootoo/freeslick.svg?branch=master)](https://travis-ci.org/smootoo/freeslick)|ojdbc7:12.1.0.2|
+|DB2 10.5|[![Build Status](https://travis-ci.org/smootoo/freeslick.svg?branch=master)](https://travis-ci.org/smootoo/freeslick)|db2jcc4:4.19.20|
 
 [![Coverage Status](https://coveralls.io/repos/smootoo/freeslick/badge.svg?branch=master)](https://coveralls.io/r/smootoo/freeslick?branch=master)
 
@@ -16,9 +17,9 @@ We did have tests running against 2000 and 2005, but it's hard to find CI
 environments to test against and they are quite old. Let us know if you
 need a driver maintained for those versions.
 
-We have added an Oracle driver as well now. This has been written from scratch.
+We have now added Oracle and DB2 profiles as well. These have been written from scratch.
 
-If there is some driver combination you are looking for, that isn't covered yet. Let us know.
+If there is some driver/database combination you are looking for, that isn't covered yet. Let us know.
 
 # Usage
 
@@ -50,7 +51,7 @@ We are using AppVeyor to automate MSSQLServer tests. (https://ci.appveyor.com/pr
 
 To run the tests locally on a docker image, [follow the instructions on the Wiki](https://github.com/smootoo/freeslick/wiki/Locally-running-the-Integration-Tests).
 
-Travis and docker drive the Oracle tests. You can fire up the Oracle 11g docker image to test locally. 
+Travis and docker drive the Oracle and DB2 tests. You can fire up the Oracle or DB2 docker images to test locally. 
 Check the .travis.yml file. 
 
 We leverage the excellent Slick integration tests to validate our drivers and add some of our own
