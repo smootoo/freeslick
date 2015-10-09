@@ -1,7 +1,7 @@
 |Driver|Build status|
 |------|-----------:|
 |SQLServer 2008|[![Build status](https://ci.appveyor.com/api/projects/status/mdrfd7o7067c5vcm/branch/master?svg=true)](https://ci.appveyor.com/project/smootoo/freeslick/branch/master)|
-|Oracle 11g|[![Build Status](https://travis-ci.org/smootoo/freeslick.svg?branch=master)](https://travis-ci.org/smootoo/freeslick)|
+|Oracle 11g|[![Build Status](https://travis-ci.org/smootoo/freeslick.svg?branch=master)](https://travis-ci.org/smootoo/freeslick/branches)|
 
 [![Coverage Status](https://coveralls.io/repos/smootoo/freeslick/badge.svg?branch=master)](https://coveralls.io/r/smootoo/freeslick?branch=master)
 

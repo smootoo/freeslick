@@ -2,7 +2,7 @@ package freeslick
 
 import com.typesafe.slick.testkit.util.{AsyncTest, JdbcTestDB}
 
-class SubqueryTest extends AsyncTest[JdbcTestDB] {
+class FreeslickSubqueryTest extends AsyncTest[JdbcTestDB] {
 
   import tdb.driver.api._
 
@@ -28,18 +28,18 @@ class SubqueryTest extends AsyncTest[JdbcTestDB] {
       _ <- q1(42).result.named("q1(42)").map(_ shouldBe List(1))
       q2 = as.filter(_.id in as.sortBy(_.id).map(_.id))
       _ <- q2.result.named("q2").map(_ shouldBe Vector(42))
-      q2 = as.filter(_.id === as.sortBy(_.id).map(_.id).max)
-      _ <- q2.result.named("q2").map(_ shouldBe Vector(42))
-      q2 = as.filter(_.id in as.map(_.id)).sortBy(_.id)
-      _ <- q2.result.named("q2").map(_ shouldBe Vector(42))
-      q2 = as.filter(_.id in
+      q3 = as.filter(_.id === as.sortBy(_.id).map(_.id).max)
+      _ <- q3.result.named("q3").map(_ shouldBe Vector(42))
+      q4 = as.filter(_.id in as.map(_.id)).sortBy(_.id)
+      _ <- q4.result.named("q4").map(_ shouldBe Vector(42))
+      q5 = as.filter(_.id in
         as.filter(_.id in as.sortBy(_.id).map(_.id)).sortBy(_.id).
           map(_.id)).sortBy(_.id)
-      _ <- q2.result.named("q2").map(_ shouldBe Vector(42))
-      q2 = as.filter(_.id in
+      _ <- q5.result.named("q5").map(_ shouldBe Vector(42))
+      q6 = as.filter(_.id in
         as.filter(_.id in as.sortBy(_.id).map(_.id)).
           sortBy(_.id).map(_.id)).sortBy(_.id).min
-      _ <- q2.result.named("q2").map(_ shouldBe Some(42))
+      _ <- q6.result.named("q6").map(_ shouldBe Some(42))
       _ <- as ++= Seq(43, 44, 45)
       // Correlated subquery
       qCorrelated1 = as.filter(x => x.id > as.filter(_.id === x.id).min).sortBy(_.id)

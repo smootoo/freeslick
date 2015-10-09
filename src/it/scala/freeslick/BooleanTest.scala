@@ -91,7 +91,7 @@ class BooleanTest extends AsyncTest[JdbcTestDB] {
 //      _ <- (LiteralColumn(true) && LiteralColumn[Option[Boolean]](None)).result.map(_ shouldBe None)
 //      _ <- (!LiteralColumn[Option[Boolean]](None)).result.map(_ shouldBe None)
 //      _ <- (LiteralColumn(true) || LiteralColumn[Option[Boolean]](None)).result.map(_ shouldBe Some(true))
-      _ <- (!LiteralColumn[Option[Boolean]](Some(false))).result.map(_ shouldBe true)
+        _ <- (!LiteralColumn[Option[Boolean]](Some(false))).result.map(_ shouldBe Some(true))
 //      r6 <- (xs.filter(_.data === true) joinLeft ys on (_.id === _.id)).map { case (l, optR) => {
 //        (l, optR,
 //          l.data && l.optData,

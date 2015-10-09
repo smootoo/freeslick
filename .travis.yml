@@ -20,7 +20,7 @@ before_install:
 - sh -v travis/runcontainer.sh
 - docker ps
 script:
-- sbt ++$TRAVIS_SCALA_VERSION 'set javaOptions ++= Seq("-Dslick.testkit-config=test-dbs/testkit-travis.conf")' clean test it:test && sbt ++$TRAVIS_SCALA_VERSION 'set javaOptions ++= Seq("-Dslick.testkit-config=test-dbs/testkit-travis.conf")' clean coverage test it:test
+- sbt ++$TRAVIS_SCALA_VERSION 'set javaOptions ++= Seq("-Dslick.testkit-config=test-dbs/testkit-travis.conf")' clean test +it:test && sbt ++$TRAVIS_SCALA_VERSION 'set javaOptions ++= Seq("-Dslick.testkit-config=test-dbs/testkit-travis.conf")' clean coverage test it:test
 after_success:
 # coveralls can't combine travis and appveyor build yet
 #- sbt ++$TRAVIS_SCALA_VERSION coveralls
