@@ -1,8 +1,8 @@
-package freeslick
+package freeslick.profile.utils
 
+import slick.ast.TypeUtil.:@
 import slick.ast.{ Library, Node }
 import slick.compiler.RewriteBooleans
-import slick.ast.TypeUtil.:@
 
 class FreeslickRewriteBooleans extends RewriteBooleans {
   override def rewrite(n: Node): Node = n match {

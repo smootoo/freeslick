@@ -1,4 +1,4 @@
-package freeslick
+package freeslick.profile.utils
 
 import slick.SlickException
 import slick.ast._

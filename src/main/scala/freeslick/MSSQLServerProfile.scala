@@ -1,23 +1,20 @@
 package freeslick
 
+import java.sql.{ Date, ResultSet, Time, Timestamp }
 import java.util.UUID
 
-import slick.SlickException
+import freeslick.profile.utils.{ DriverRowNumberPagination, FreeslickRewriteBooleans }
+import slick.ast._
+import slick.compiler.{ CompilerState, _ }
 import slick.dbio.DBIO
 import slick.driver._
-import slick.compiler._
-import java.sql.{ ResultSet, Timestamp, Date, Time }
-
-import slick.util.ConstArray
-
-import scala.annotation.tailrec
-import scala.concurrent.ExecutionContext
-import slick.ast._
-import slick.util.MacroSupport.macroSupportInterpolation
-import slick.profile.{ RelationalProfile, SqlProfile, Capability }
-import slick.compiler.CompilerState
-import slick.jdbc.{ JdbcModelBuilder, JdbcType }
 import slick.jdbc.meta.{ MColumn, MTable }
+import slick.jdbc.{ JdbcModelBuilder, JdbcType }
+import slick.profile.{ Capability, SqlProfile }
+import slick.util.ConstArray
+import slick.util.MacroSupport.macroSupportInterpolation
+
+import scala.concurrent.ExecutionContext
 
 /**
  * Slick profile for Microsoft SQL Server.
@@ -203,17 +200,19 @@ trait MSSQLServerProfile extends JdbcDriver with DriverRowNumberPagination { dri
       override def valueToSQLLiteral(value: Date) = "(convert(date, {d '" + value + "'}))"
     }
     class TimeJdbcType extends super.TimeJdbcType {
+      lazy val timeRe = """^.*(\d\d:\d\d:\d\d).(\d*)$""".r
       override def valueToSQLLiteral(value: Time) = "(convert(time, {t '" + value + "'}))"
       override def getValue(r: ResultSet, idx: Int) = {
         val s = r.getString(idx)
-        val sep = s.indexOf('.')
-        if (sep == -1) Time.valueOf(s)
-        else {
-          val t = Time.valueOf(s.substring(0, sep))
-          val millis = (("0." + s.substring(sep + 1)).toDouble * 1000.0).toInt
-          t.setTime(t.getTime + millis)
-          t
+        s match {
+          case timeRe(timePart, milliPart) =>
+            val t = Time.valueOf(timePart)
+            val millis = (("0." + milliPart).toDouble * 1000).toInt
+            t.setTime(t.getTime + millis)
+            t
+          case _ => Time.valueOf(s)
         }
+
       }
     }
     class TimestampJdbcType extends super.TimestampJdbcType {

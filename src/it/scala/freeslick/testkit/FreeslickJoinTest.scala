@@ -1,7 +1,6 @@
-package freeslick
+package freeslick.testkit
 
 import com.typesafe.slick.testkit.tests.JoinTest
-import com.typesafe.slick.testkit.util.{AsyncTest, JdbcTestDB}
 
 class FreeslickJoinTest extends JoinTest {
 

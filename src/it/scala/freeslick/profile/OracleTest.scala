@@ -1,24 +1,33 @@
-package freeslick
+package freeslick.profile
 
 import com.typesafe.slick.testkit
 import com.typesafe.slick.testkit.tests._
 import com.typesafe.slick.testkit.util._
+import freeslick.OracleProfile
+import freeslick.testkit._
 import org.junit.runner.RunWith
 import slick.util.Logging
 
 import scala.concurrent.ExecutionContext
 
 @RunWith(classOf[Testkit])
-class OracleITTest extends FreeslickDriverTest(OracleTest.Oracle11gTest) {
+class OracleITTest extends FreeslickDriverTest(OracleTest.Oracle11gTest("oracle11g")) {
   override def tests = {
     super.tests
       .filterNot(_ == classOf[testkit.tests.JoinTest]) // Replaced with a FreeslickJoinTest
-    //Seq(classOf[FreeslickGroupByTest])
+    //Seq(classOf[ForeignKeyTest], classOf[UniqueIndexFKTest])
+  }
+}
+
+@RunWith(classOf[Testkit])
+class OracleNoTSITTest extends FreeslickDriverTest(OracleTest.Oracle11gTest("oracle11gNoTableSpace")) {
+  override def tests = {
+    Seq(classOf[testkit.tests.ModelBuilderTest]) // testing syntax if no tablespaces specified
   }
 }
 
 object OracleTest extends Logging {
-  lazy val Oracle11gTest: TestDB = new ExternalJdbcTestDB("oracle11g") {
+  def Oracle11gTest(testDBName: String): TestDB = new ExternalJdbcTestDB(testDBName) {
     val driver = new OracleProfile {
       override def connectionConfig = Some(config.getConfig("adminConn"))
       override def toString() = "OracleDriverTest" // ModelBuilderTest looks for a classname with OracleDriver in

@@ -1,4 +1,4 @@
-package freeslick
+package freeslick.testkit
 
 import java.util.UUID
 
@@ -9,7 +9,7 @@ class UUIDTest extends AsyncTest[JdbcTestDB] {
   import tdb.driver.api._
 
   def testUUID = {
-    val uuid0 = UUID.fromString("99111111-1111-1111-1111-111111111111")
+    val uuid0 = UUID.fromString("99123456-1234-4321-9876-123456789ABC")
     val uuidSqlString = slickDriver.columnTypes.uuidJdbcType.valueToSQLLiteral(uuid0)
     val uuidSampleData = uuid0 +: (0 to 3).map(x => UUID.randomUUID())
     val uuid1 = uuidSampleData(1)
@@ -81,6 +81,28 @@ class UUIDTest extends AsyncTest[JdbcTestDB] {
       // exists type UUID operations
       _ <- xs.exists.result.map(_ shouldBe true)
       _ <- xs.filter(_.id === 23).exists.result.map(_ shouldBe false)
+    } yield {}
+  }
+
+  def testUUIDPrimaryKey = {
+    val uuid0 = UUID.randomUUID()
+    val uuid1 = UUID.randomUUID()
+    val uuid2 = UUID.randomUUID()
+    val uuids = Seq(uuid0, uuid1, uuid2)
+    class UUIDPK(name: String)(tag: Tag) extends Table[(UUID, String)](tag, name) {
+      def id = column[UUID]("id")
+      def data = column[String]("data")
+      def * = (id, data)
+      def pk = primaryKey("uuidpk_pk", id)
+    }
+    val us = TableQuery(new UUIDPK("UUIDPK")(_))
+    for {
+      _ <- us.schema.create
+      _ <- us ++= uuids.map { uuid => (uuid, uuid.toString) }
+
+      _ <- us.filter(_.id === uuid0).to[Set].result.map(_ shouldBe Set((uuid0, uuid0.toString)))
+      _ <- us.filter(_.data === uuid0.toString).to[Set].result.map(_ shouldBe Set((uuid0, uuid0.toString)))
+      _ <- us.filter(_.id === UUID.randomUUID()).to[Set].result.map(_ shouldBe Set.empty)
     } yield {}
   }
 }

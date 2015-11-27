@@ -1,12 +1,9 @@
 // Copied from https://github.com/slick/slick/blob/3.0/slick-testkit/src/main/scala/com/typesafe/slick/testkit/tests/PlainSQLTest.scala
 // and then tweaked for SQLServer
-package freeslick
+package freeslick.testkit
 
 import com.typesafe.slick.testkit.util.{AsyncTest, JdbcTestDB}
 import slick.jdbc.GetResult
-
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
 
 class MSSQLServerPlainSQLTest extends AsyncTest[JdbcTestDB] {
 

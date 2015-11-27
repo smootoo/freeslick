@@ -1,8 +1,10 @@
-package freeslick
+package freeslick.profile
 
 import com.typesafe.slick.testkit
 import com.typesafe.slick.testkit.tests._
 import com.typesafe.slick.testkit.util._
+import freeslick.MSSQLServerProfile
+import freeslick.testkit.{UUIDTest, FreeslickGroupByTest, MSSQLServerPlainSQLTest}
 import org.junit.runner.RunWith
 import slick.jdbc.meta.MTable
 import slick.util.Logging
@@ -15,7 +17,7 @@ class MSSQLServer2008Test extends FreeslickDriverTest(MSSQLServerTest.testDB) {
     super.tests
       .filterNot(_ == classOf[testkit.tests.PlainSQLTest]) :+
       classOf[MSSQLServerPlainSQLTest]
-    //Seq(classOf[FreeslickGroupByTest])
+    //Seq(classOf[UUIDTest])
   }
 }
 
