@@ -1,6 +1,6 @@
 |Profile|Build status|JDBC Driver|
 |-------|-----------:|-----------|
-|SQLServer 2008|[![Build status](https://ci.appveyor.com/api/projects/status/mdrfd7o7067c5vcm?svg=true&branch=master)](https://ci.appveyor.com/project/smootoo/freeslick)|jtds:1.2.8| 
+|SQLServer 2008, 2012, 2014|[![Build status](https://ci.appveyor.com/api/projects/status/mdrfd7o7067c5vcm?svg=true&branch=master)](https://ci.appveyor.com/project/smootoo/freeslick)|jtds:1.2.8| 
 |Oracle 11g|[![Build Status](https://travis-ci.org/smootoo/freeslick.svg?branch=master)](https://travis-ci.org/smootoo/freeslick)|ojdbc7:12.1.0.2|
 |DB2 10.5|[![Build Status](https://travis-ci.org/smootoo/freeslick.svg?branch=master)](https://travis-ci.org/smootoo/freeslick)|db2jcc4:4.19.20|
 
