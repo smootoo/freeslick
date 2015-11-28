@@ -1,6 +1,4 @@
 language: scala
-#jdk:
-#- openjdk7
 scala:
 - 2.10.5
 - 2.11.5
@@ -15,8 +13,6 @@ before_install:
 - export TZ=Asia/Kamchatka
 - sh -v ZNonPublicDeps/install
 - docker version
-# docker is struggling in travis env. put in retry loop
-#- docker run -d -p 49160:22 -p 49161:1521 wnameless/oracle-xe-11g
 - sh -v travis/runcontainer.sh oracle
 - sh -v travis/runcontainer.sh db2
 - docker ps
@@ -25,6 +21,10 @@ script:
 after_success:
 # coveralls can't combine travis and appveyor build yet
 #- sbt ++$TRAVIS_SCALA_VERSION coveralls
+- sbt ++$TRAVIS_SCALA_VERSION +publishMasterOnTravis
 env:
   global:
     secure: Ouzwf4vUPDvMqiSaLDo0PHYRADPjGPlYOAnkKbnAuzrNBJ98TKRuDP2zopQ95JpSxiKdOxX6GCmpJOAqCEQaXyYZZ6XbHijjDcVNJf9aTJf09msHiMEOhxpxn08rf9viUi/as+jq+/ngj6L7N23aiRZDJHcpXGEecWbd6eeKgl4=
+    secure: "VcT5n6mJcGdHLl3GgcCt08+CG6eOfKeG+t6zOLBwY3CS0jE3hiqT48/eedOJZEXwxcQ6p/dXBQg+HuR/DkSxlyNt09JBrbUYs6VHZAftHypt6x4bb+J/5oVgohbcGXVyOgywRwsZrz0sjtfxeijT/HYa66EGoDCD4zUkSdAIN/8="
+    secure: "VWN4NkrEFf9dZw7b8mW1aUVc+WzBdQq3ZXwaLK5Ap5T+tyvNxij5zt6NvQphu6TyFq/jfX0LCHVOf/chuydqqMcyz/iXJPQSPFFZ7YGZV0GEWmt/2pw2CKrVsDsp52KUqYKFCfbgNX4DTuIVJaujXktMgJRkOpSKZP7LKtAIxtk="
+
