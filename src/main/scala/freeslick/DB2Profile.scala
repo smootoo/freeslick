@@ -67,7 +67,7 @@ trait DB2Profile extends JdbcDriver with UniqueConstraintIndexesBuilder with Dri
   import TypeUtil._
   class QueryBuilder(tree: Node, state: CompilerState) extends super.QueryBuilder(tree, state) with RowNumberPagination {
     override protected val concatOperator = Some("||")
-    val db2Pi = pi.substring(0,32) // DB2 has a max number of digits
+    val db2Pi = pi.substring(0, 32) // DB2 has a max number of digits
     override protected val quotedJdbcFns = Some(Nil)
     override def expr(n: Node, skipParens: Boolean = false): Unit = {
       n match {

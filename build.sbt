@@ -82,10 +82,32 @@ licenses := Seq(
 
 homepage := Some(url("http://github.com/smootoo/freeslick"))
 
+val publishMasterOnTravis = taskKey[Unit]("publish master on travis")
+
+def publishMasterOnTravisImpl = Def.taskDyn {
+  import scala.util.Try
+  val travis   = Try(sys.env("TRAVIS")).getOrElse("false") == "true"
+  val pr       = Try(sys.env("TRAVIS_PULL_REQUEST")).getOrElse("false") != "false"
+  val branch   = Try(sys.env("TRAVIS_BRANCH")).getOrElse("??")
+  val snapshot = version.value.trim.endsWith("SNAPSHOT")
+  val log = streams.value.log
+  (travis, pr, branch, snapshot) match {
+    case (true, false, "master", true) => publish
+    case _ =>
+      if (!travis) log.info("Not on travis, so not publishing")
+      if (pr) log.info("PR build. not publishing snapshot")
+      if (branch != "master") log.info("Not on master. not publishing snapshot")
+      if (!snapshot) log.info("Not a snapshot build. Not publishing")
+      Def.task ()
+  }
+}
+
+publishMasterOnTravis := publishMasterOnTravisImpl.value
+
 publishTo <<= version { v: String =>
   val nexus = "https://oss.sonatype.org/"
-  if (v.contains("SNAP")) Some("snapshots" at nexus + "content/repositories/snapshots")
-  else                    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+  if (v.contains("SNAPSHOT")) Some("snapshots" at nexus + "content/repositories/snapshots")
+  else                        Some("releases"  at nexus + "service/local/staging/deploy/maven2")
 }
 
 credentials += Credentials(
