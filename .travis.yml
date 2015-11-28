@@ -9,6 +9,8 @@ cache:
 services:
 - docker
 before_install:
+- echo $TEST
+- echo $TEST1
 # TZ needed for Oracle driver!
 - export TZ=Asia/Kamchatka
 - sh -v ZNonPublicDeps/install
@@ -24,7 +26,11 @@ after_success:
 - sbt ++$TRAVIS_SCALA_VERSION +publishMasterOnTravis
 env:
   global:
-    secure: Ouzwf4vUPDvMqiSaLDo0PHYRADPjGPlYOAnkKbnAuzrNBJ98TKRuDP2zopQ95JpSxiKdOxX6GCmpJOAqCEQaXyYZZ6XbHijjDcVNJf9aTJf09msHiMEOhxpxn08rf9viUi/as+jq+/ngj6L7N23aiRZDJHcpXGEecWbd6eeKgl4=
-    secure: "VcT5n6mJcGdHLl3GgcCt08+CG6eOfKeG+t6zOLBwY3CS0jE3hiqT48/eedOJZEXwxcQ6p/dXBQg+HuR/DkSxlyNt09JBrbUYs6VHZAftHypt6x4bb+J/5oVgohbcGXVyOgywRwsZrz0sjtfxeijT/HYa66EGoDCD4zUkSdAIN/8="
-    secure: "VWN4NkrEFf9dZw7b8mW1aUVc+WzBdQq3ZXwaLK5Ap5T+tyvNxij5zt6NvQphu6TyFq/jfX0LCHVOf/chuydqqMcyz/iXJPQSPFFZ7YGZV0GEWmt/2pw2CKrVsDsp52KUqYKFCfbgNX4DTuIVJaujXktMgJRkOpSKZP7LKtAIxtk="
+    - secure: Ouzwf4vUPDvMqiSaLDo0PHYRADPjGPlYOAnkKbnAuzrNBJ98TKRuDP2zopQ95JpSxiKdOxX6GCmpJOAqCEQaXyYZZ6XbHijjDcVNJf9aTJf09msHiMEOhxpxn08rf9viUi/as+jq+/ngj6L7N23aiRZDJHcpXGEecWbd6eeKgl4=
+    - secure: "VcT5n6mJcGdHLl3GgcCt08+CG6eOfKeG+t6zOLBwY3CS0jE3hiqT48/eedOJZEXwxcQ6p/dXBQg+HuR/DkSxlyNt09JBrbUYs6VHZAftHypt6x4bb+J/5oVgohbcGXVyOgywRwsZrz0sjtfxeijT/HYa66EGoDCD4zUkSdAIN/8="
+    - secure: "VWN4NkrEFf9dZw7b8mW1aUVc+WzBdQq3ZXwaLK5Ap5T+tyvNxij5zt6NvQphu6TyFq/jfX0LCHVOf/chuydqqMcyz/iXJPQSPFFZ7YGZV0GEWmt/2pw2CKrVsDsp52KUqYKFCfbgNX4DTuIVJaujXktMgJRkOpSKZP7LKtAIxtk="
+    - secure: "lMFplwnS9zdiOy/J+AzWnqjNk8yMW0tOxuXmPwXDggd+X4/MnKnfweuJK7Bl9pKZ7r+wRSCXOnTQqOsvhhfNi8CUPo8hby6ZiT77nJdwCxia0tBHSv2DKxwOhJUxyb2NhlzC7jCRozlq8o6UsinFnr/O5jUrPWM9ez0fh5F+wjA="
+    - secure: eHIGvc0QKlgOxMwZ2nZ/qhoS8JvHuM7iWStICdqpWz78CKPPJ5ZxBwTZ2vT/xH4V5EGG3AqHfemkkV6eD8L5X0f/DCRrQltaUpyKScWeffdOcw81e3pcxEfHdo3WkoqwNeFDrGDj3g74vQXdJsiUkRzTS+RHdyWPq5dsZZUAV6c=
+
+
 
