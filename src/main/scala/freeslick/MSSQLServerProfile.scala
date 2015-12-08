@@ -56,7 +56,7 @@ trait MSSQLServerProfile extends JdbcDriver with DriverRowNumberPagination { dri
   override def createInsertBuilder(node: Insert): super.InsertBuilder = new InsertBuilder(node)
 
   override def defaultTables(implicit ec: ExecutionContext): DBIO[Seq[MTable]] =
-    MTable.getTables(None, None, None, Some(Seq("TABLE")))
+    MTable.getTables(None, Some("dbo"), None, Some(Seq("TABLE")))
 
   override def defaultSqlTypeName(tmd: JdbcType[_], sym: Option[FieldSymbol]): String = tmd.sqlType match {
     case java.sql.Types.BOOLEAN => "BIT"

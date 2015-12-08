@@ -15,40 +15,43 @@ install:
   - ps: |
       [reflection.assembly]::LoadWithPartialName("Microsoft.SqlServer.Smo") | Out-Null;
       [reflection.assembly]::LoadWithPartialName("Microsoft.SqlServer.SqlWmiManagement") | Out-Null;
-      $instancename = 'SQL2008R2SP2'
-      $wmi = New-Object('Microsoft.SqlServer.Management.Smo.Wmi.ManagedComputer');
-      $tcp = $wmi.GetSmoObject("ManagedComputer[@Name='${env:computername}']/ServerInstance[@Name='${instancename}']/ServerProtocol[@Name='Tcp']");
-      $tcp.IsEnabled = $true;
       $port = 1433
-      foreach ($ipAddress in $tcp.IPAddresses)
+      foreach($instancename in @('SQL2008R2SP2', 'SQL2012SP1', 'SQL2014'))
       {
-        $ipAddress.IPAddressProperties["TcpDynamicPorts"].Value = ""
-        $ipAddress.IPAddressProperties["TcpPort"].Value = "${port}"
-      }
-      $tcp.Alter();
-      Start-Service -Name "MSSQL`$$instancename";
-      $wmi = New-Object('Microsoft.SqlServer.Management.Smo.Wmi.ManagedComputer');
-      $ipall = $wmi.GetSmoObject("ManagedComputer[@Name='${env:computername}']/ServerInstance[@Name='${instancename}']/ServerProtocol[@Name='Tcp']/IPAddress[@Name='IPAll']");
-      $config = @{
-        instanceName = $instancename;
-        config = @{
-          server = "localhost";
-          userName = "sa";
-          password = "Password12!";
-          options = @{
-            port = ${port};
-            database = "master";
-              cryptoCredentialsDetails = @{
-            ciphers = "RC4-MD5"
-            }
+          $wmi = New-Object('Microsoft.SqlServer.Management.Smo.Wmi.ManagedComputer');
+          $tcp = $wmi.GetSmoObject("ManagedComputer[@Name='${env:computername}']/ServerInstance[@Name='${instancename}']/ServerProtocol[@Name='Tcp']");
+          $tcp.IsEnabled = $true;
+          foreach ($ipAddress in $tcp.IPAddresses)
+          {
+            $ipAddress.IPAddressProperties["TcpDynamicPorts"].Value = ""
+            $ipAddress.IPAddressProperties["TcpPort"].Value = "${port}"
           }
-        }
-      } | ConvertTo-Json -Depth 3;
-      Write-Host "${config}"
+          $tcp.Alter();
+          Start-Service -Name "MSSQL`$$instancename";
+          $wmi = New-Object('Microsoft.SqlServer.Management.Smo.Wmi.ManagedComputer');
+          $ipall = $wmi.GetSmoObject("ManagedComputer[@Name='${env:computername}']/ServerInstance[@Name='${instancename}']/ServerProtocol[@Name='Tcp']/IPAddress[@Name='IPAll']");
+          $config = @{
+            instanceName = $instancename;
+            config = @{
+              server = "localhost";
+              userName = "sa";
+              password = "Password12!";
+              options = @{
+                port = ${port};
+                database = "master";
+                  cryptoCredentialsDetails = @{
+                ciphers = "RC4-MD5"
+                }
+              }
+            }
+          } | ConvertTo-Json -Depth 3;
+          Write-Host "${config}"
+          $port += 100
+      }
 build_script:
   - sbt clean compile test:compile it:compile
 test_script:
-  - sbt set" javaOptions ++= "Seq(\"-Dslick.testkit-config=test-dbs/testkit-appveyor.conf\") test +it:test
+  - sbt set" javaOptions ++= "Seq(\"-Dslick.testkit-config=test-dbs/testkit-appveyor.conf\") test it:test
 cache:
   - C:\sbt\
   - C:\Users\appveyor\.m2
