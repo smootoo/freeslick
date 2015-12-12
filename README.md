@@ -73,3 +73,27 @@ Our code starts with [the last-known release of the driver from Slick](https://g
 You can contribute by clicking the star button and using this software! Tweet about it if you find it useful.
 
 Contributors are encouraged to fork this repository and issue pull requests. It's such a simple project that if you have a bug, you'll probably be able to fix it yourself.
+
+## Getting the dependencies right
+
+If you want to contribute to the freeslick project, you first must install some dependencies before you can run the tests. This ascii cast shows how to do this.
+
+Instructions:
+
+1. First you must have docker running. For Windows and Mac, use [boot2docker](https://github.com/boot2docker/boot2docker) or docker-machine for [Mac](https://docs.docker.com/engine/installation/mac/) or [Windows](https://docs.docker.com/engine/installation/windows/). For Linux use the packet manager of your distribution
+2. Install the official docker image for DB2 `docker run -d -p 50000:50000 --name db2freeslick -e DB2INST1_PASSWORD=db2inst1-pwd -e LICENSE=accept  ibmcom/db2express-c:latest "db2start"
+`
+3. Copy the needed driver file out of that image `docker cp db2freeslick:/home/db2inst1/sqllib/java/db2jcc4.jar .` ...
+4. ... and install it in the Maven cache on your local machine `mvn install:install-file -DgroupId=com.ibm -DartifactId=db2jcc4 -Dversion=4.19.26 -Dpackaging=jar -Dfile=./db2jcc4.jar`
+5. Please download the Oracle JDBC driver manually from [Oracle](http://www.oracle.com/technetwork/database/features/jdbc/jdbc-drivers-12c-download-1958347.html). Fetch the file called "ojdbc7.jar" (3,397,734 bytes, SHA1 Checksum: a2348e4944956fac05235f7cd5d30bf872afb157)`. You will need to create a free Oracle account for this.
+6. Copy the file from your download directory `cp ~/Downloads/ojdbc7.jar ./ojdbc7-12.1.0.2.jar` and `install it in the Maven cache on your local machine
+mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc7 -Dversion=12.1.0.2 -Dpackaging=jar -Dfile=./ojdbc7-12.1.0.2.jar`
+
+After that `sbt test` should run without errors.
+
+Please note that `sbt test` will load the JDBC drivers, but not run the tests against the proprietary databases. It will use an in-memory H2 database. It will only test if you have all the dependencies right and are ready to run. To run the tests against the real databases, run `sbt it:test`.
+
+
+
+For detailed instructions, please see the following [screen cast](https://asciinema.org/a/31670?speed=2)
+[![asciicast](https://asciinema.org/a/31670.png)](https://asciinema.org/a/31670?speed=2)
