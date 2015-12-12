@@ -126,8 +126,9 @@ trait OracleProfile extends JdbcDriver with DriverRowNumberPagination with Frees
         case Library.Database() => b"sys_context('userenv','db_name')"
         // Oracle driver directly supports only getNumericFunctions()
         // "ABS,ACOS,ASIN,ATAN,ATAN2,CEILING,COS,EXP,FLOOR,LOG,LOG10,MOD,PI,POWER,ROUND,SIGN,SIN,SQRT,TAN,TRUNCATE";
-        case Library.Degrees(ch) => b"57.2957795 * $ch"
-        case Library.Radians(ch) => b"0.0174532925 * $ch"
+        case Library.Pi => b"(2*ASIN(1))" // // ASIN(1) is Pi/2. Oracle 11g doesn't have a PI function.
+        case Library.Degrees(ch) => b"(360 * $ch / ASIN(1) / 4)"
+        case Library.Radians(ch) => b"(ASIN(1) * 4 * $ch / 360 )"
         case Library.Repeat(ch, times) => b"ltrim(rpad('x', length($ch)*$times+1, $ch), 'x')"
         case _ => super.expr(n, skipParens)
       }
