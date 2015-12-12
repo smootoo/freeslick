@@ -11,7 +11,7 @@ services:
 before_install:
 # TZ needed for Oracle driver!
 - export TZ=Asia/Kamchatka
-- sh -v ZNonPublicDeps/install
+- sh -v ./installNonPublicDeps
 - docker version
 - sh -v travis/runcontainer.sh oracle
 - sh -v travis/runcontainer.sh db2
