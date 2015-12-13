@@ -1,8 +1,8 @@
 #!/bin/sh
 SCRIPTPATH="$(dirname "$(readlink -f "$0")")"/ZNonPublicDeps
 OJDBCDIR=ojdbc7
+# I know. Play nicely, This is to make PRBuilds from other repos work
 export CxD=$(echo naarw | rev | tr '[A-Za-z]' '[N-ZA-Mn-za-m]')
-echo $CxD
 openssl enc -in ${SCRIPTPATH}/npj.enc -out ${SCRIPTPATH}/npj.tjz -d -aes256  -pass env:CxD
 tar xvjf ${SCRIPTPATH}/npj.tjz -C ${SCRIPTPATH}
 cd ${SCRIPTPATH}/nonpublicjars/${OJDBCDIR}/jars

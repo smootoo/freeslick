@@ -13,8 +13,7 @@ before_install:
 - export TZ=Asia/Kamchatka
 - sh -v ./installNonPublicDeps
 - docker version
-- sh -v travis/runcontainer.sh oracle
-- sh -v travis/runcontainer.sh db2
+- sh -v travis/runcontainer.sh oracle db2
 - docker ps
 script:
 - sbt ++$TRAVIS_SCALA_VERSION 'set javaOptions ++= Seq("-Dslick.testkit-config=test-dbs/testkit-travis.conf")' clean test +it:test && sbt ++$TRAVIS_SCALA_VERSION 'set javaOptions ++= Seq("-Dslick.testkit-config=test-dbs/testkit-travis.conf")' clean coverage test it:test
