@@ -32,11 +32,15 @@ trait DB2Profile extends JdbcDriver with UniqueConstraintIndexesBuilder with Dri
   driver =>
 
   override protected def computeCapabilities: Set[Capability] = (super.computeCapabilities
-    - JdbcProfile.capabilities.returnInsertKey
     - JdbcProfile.capabilities.booleanMetaData
     - RelationalProfile.capabilities.reverse
     - JdbcProfile.capabilities.supportsByte
   )
+
+  // "merge into" (i.e. server side upsert) won't return generated keys in db2 jdbc
+  // this will do a select then insert or update in a transaction. The insert will
+  // return generated keys
+  override protected lazy val useServerSideUpsertReturning = false
 
   override protected def computeQueryCompiler =
     super.computeQueryCompiler.addAfter(new FreeslickRewriteBooleans, QueryCompiler.sqlPhases.last)

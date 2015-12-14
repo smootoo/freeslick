@@ -18,7 +18,7 @@ class FreeslickDriverTest(driver: TestDB) extends DriverTest(driver) {
       classOf[FreeslickMutateTest] :+
       classOf[JDBCFunctionTest]
     //TODO Sue timestamps, blobs, multiple autoinc column, all the jdbcfunctions
-    //Seq(classOf[UUIDTest])
+    //Seq(classOf[FreeslickInsertTest])
   }
 }
 

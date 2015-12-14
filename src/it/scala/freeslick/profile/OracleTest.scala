@@ -15,7 +15,7 @@ class OracleITTest extends FreeslickDriverTest(OracleTest.Oracle11gTest("oracle1
   override def tests = {
     super.tests
       .filterNot(_ == classOf[testkit.tests.JoinTest]) // Replaced with a FreeslickJoinTest
-    //Seq(classOf[ForeignKeyTest], classOf[UniqueIndexFKTest])
+    //Seq(classOf[FreeslickInsertTest])
   }
 }
 

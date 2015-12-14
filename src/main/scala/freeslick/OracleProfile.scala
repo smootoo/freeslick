@@ -40,11 +40,15 @@ trait OracleProfile extends JdbcDriver with DriverRowNumberPagination with Frees
   override protected def computeCapabilities: Set[Capability] = (super.computeCapabilities
     //In 11g AutoInc columns are simulated by Sequences, so no forceInsert or returnInsertKey
     - JdbcProfile.capabilities.forceInsert
-    - JdbcProfile.capabilities.returnInsertKey
     - JdbcProfile.capabilities.booleanMetaData
     - JdbcProfile.capabilities.supportsByte
     - JdbcProfile.capabilities.distinguishesIntTypes
   )
+
+  // "merge into" (i.e. server side upsert) won't return generated keys in oracle jdbc
+  // this will do a select then insert or update in a transaction. The insert will
+  // return generated keys
+  override protected lazy val useServerSideUpsertReturning = false
 
   override protected def computeQueryCompiler =
     super.computeQueryCompiler.addAfter(new FreeslickRewriteBooleans, QueryCompiler.sqlPhases.last)
@@ -160,11 +164,11 @@ trait OracleProfile extends JdbcDriver with DriverRowNumberPagination with Frees
         val columnSequence = s"${tableName}_${column}autoinc"
         val columnName = column.name
         val autoincStatements = Seq("CREATE SEQUENCE " + columnSequence,
-          """CREATE OR REPLACE TRIGGER """ + tableName + """_triggerid BEFORE INSERT ON """
-            + quoteIdentifier(tableName) + """ FOR EACH ROW
+          s"""CREATE OR REPLACE TRIGGER ${tableName}_triggerid_${column} BEFORE INSERT ON
+            ${quoteIdentifier(tableName)} FOR EACH ROW
             BEGIN
-              SELECT """ + columnSequence + """.NEXTVAL
-              into :NEW.""" + quoteIdentifier(columnName) + """
+              SELECT ${columnSequence}.NEXTVAL
+              into :NEW.${quoteIdentifier(columnName)}
               FROM   dual;
             END;"""
         )

@@ -41,6 +41,10 @@ do
     elif [ "$RUNNING" = "false" ]; then
       echo "Container ${CONTAINER_NAME} exists, but stopped. Starting ..."
       RESULT=$(docker start ${CONTAINER_NAME} && echo -e "\n${SUCCESS_TOKEN}")
+	LAST_LINE=$(echo "${RESULT}" | tail -n 1)
+	if [ "${LAST_LINE}" = "${SUCCESS_TOKEN}" ]; then
+	  docker exec -i db2freeslick bash -c "su - db2inst1 -c 'db2 connect to DSNFREE && while sleep 65535;do :; done'" &
+	fi
     elif [ "$RUNNING" = "true" ]; then
       echo "Container ${CONTAINER_NAME} already running"
       RESULT=${SUCCESS_TOKEN}
