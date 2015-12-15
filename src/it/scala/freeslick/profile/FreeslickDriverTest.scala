@@ -27,25 +27,13 @@ class FreeslickDriverTest(driver: TestDB) extends DriverTest(driver) {
 class H2MemTest extends FreeslickDriverTest(StandardTestDBs.H2Mem)
 
 @RunWith(classOf[Testkit])
-class H2DiskTest extends FreeslickDriverTest(StandardTestDBs.H2Disk)
-
-@RunWith(classOf[Testkit])
 class HsqldbMemTest extends FreeslickDriverTest(StandardTestDBs.HsqldbMem)
-
-@RunWith(classOf[Testkit])
-class HsqldbDiskTest extends FreeslickDriverTest(StandardTestDBs.HsqldbDisk)
 
 @RunWith(classOf[Testkit])
 class SQLiteMemTest extends FreeslickDriverTest(StandardTestDBs.SQLiteMem)
 
 @RunWith(classOf[Testkit])
-class SQLiteDiskTest extends FreeslickDriverTest(StandardTestDBs.SQLiteDisk)
-
-@RunWith(classOf[Testkit])
 class DerbyMemTest extends FreeslickDriverTest(StandardTestDBs.DerbyMem)
-
-@RunWith(classOf[Testkit])
-class DerbyDiskTest extends FreeslickDriverTest(StandardTestDBs.DerbyDisk)
 
 @RunWith(classOf[Testkit])
 class HeapTest extends FreeslickDriverTest(StandardTestDBs.Heap)

@@ -35,7 +35,8 @@ libraryDependencies ++= Seq(
   // add the below dependencies to test any new driver tests against other db drivers
   "com.h2database"       % "h2"                          % "1.3.170"  % "test;it",
   "org.apache.derby"     % "derby"                       % "10.9.1.0" % "test;it",
-  "org.hsqldb"           % "hsqldb"                      % "2.2.8"    % "test;it"
+  "org.hsqldb"           % "hsqldb"                      % "2.2.8"    % "test;it",
+  "org.xerial"           % "sqlite-jdbc"                 % "3.8.7"    % "test;it"
 ) ++ sys.env.get("APPVEYOR").map(_ => Seq()).getOrElse(Seq( //Don't depend on non-public jars in APPVeyor environment
   "com.oracle"           % "ojdbc7"                      % "12.1.0.2" % "optional;test;it",
   "com.ibm"              % "db2jcc4"                     % "4.19.26"  % "optional;test;it"
