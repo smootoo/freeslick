@@ -39,10 +39,15 @@ trait MSSQLServerProfile extends JdbcDriver with DriverRowNumberPagination { dri
   override protected def computeCapabilities: Set[Capability] = (super.computeCapabilities
     - JdbcProfile.capabilities.forceInsert
     - JdbcProfile.capabilities.returnInsertOther
-    - JdbcProfile.capabilities.returnInsertKey
     - SqlProfile.capabilities.sequence
     - JdbcProfile.capabilities.supportsByte
   )
+
+  // "merge into" (i.e. server side upsert) won't return generated keys in sqlserver jdbc
+  // on an update, it seems to return the value for the last insert
+  // this will do a select then insert or update in a transaction. The insert will
+  // return generated keys
+  override protected lazy val useServerSideUpsertReturning = false
 
   override protected def computeQueryCompiler =
     super.computeQueryCompiler.addAfter(new FreeslickRewriteBooleans, QueryCompiler.sqlPhases.last)
