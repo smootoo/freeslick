@@ -10,14 +10,14 @@ class FreeslickDriverTest(driver: TestDB) extends DriverTest(driver) {
     super.tests :+
       classOf[BooleanTest] :+
       classOf[FetchOffsetTest] :+
-      classOf[FreeslickJoinTest] :+
-      classOf[FreeslickSubqueryTest] :+
-      classOf[UUIDTest] :+
-      classOf[FetchOffsetTest] :+
       classOf[FreeslickGroupByTest] :+
+      classOf[FreeslickInsertTest] :+
+      classOf[FreeslickJoinTest] :+
       classOf[FreeslickMutateTest] :+
-      classOf[JDBCFunctionTest]
-    //TODO Sue timestamps, blobs, multiple autoinc column, all the jdbcfunctions
+      classOf[FreeslickSubqueryTest] :+
+      classOf[JDBCFunctionTest] :+
+      classOf[UUIDTest]
+    //TODO Sue timestamps, blobs, all the jdbcfunctions
     //Seq(classOf[FreeslickInsertTest])
   }
 }
