@@ -1,8 +1,9 @@
-|Profile|Build status|JDBC Driver|
-|-------|-----------:|-----------|
-|SQLServer 2008, 2012, 2014|[![Build status](https://ci.appveyor.com/api/projects/status/mdrfd7o7067c5vcm?svg=true&branch=master)](https://ci.appveyor.com/project/smootoo/freeslick)|jtds:1.2.8| 
-|Oracle 11g|[![Build Status](https://travis-ci.org/smootoo/freeslick.svg?branch=master)](https://travis-ci.org/smootoo/freeslick)|ojdbc7:12.1.0.2|
-|DB2 10.5|[![Build Status](https://travis-ci.org/smootoo/freeslick.svg?branch=master)](https://travis-ci.org/smootoo/freeslick)|db2jcc4:4.19.20|
+|Database|JDBC Driver|Freeslick Profile|Build status|
+|--------|-----------|-----------------|-----------:|
+|SQLServer 2008, 2012, 2014|[jtds:1.2.8](http://sourceforge.net/projects/jtds/files/jtds/)|freeslick.MSSQLServerProfile|[![Build status](https://ci.appveyor.com/api/projects/status/mdrfd7o7067c5vcm?svg=true&branch=master)](https://ci.appveyor.com/project/smootoo/freeslick)|
+|SQLServer 2008, 2012, 2014|[msjdbc:4.2](https://www.microsoft.com/en-gb/download/details.aspx?id=11774)|freeslick.MSJDBCSQLServerProfile|[![Build status](https://ci.appveyor.com/api/projects/status/mdrfd7o7067c5vcm?svg=true&branch=master)](https://ci.appveyor.com/project/smootoo/freeslick)|
+|Oracle 11g|[ojdbc7:12.1.0.2](http://www.oracle.com/technetwork/database/features/jdbc/index-091264.html)|freeslick.OracleProfile|[![Build Status](https://travis-ci.org/smootoo/freeslick.svg?branch=master)](https://travis-ci.org/smootoo/freeslick)|
+|DB2 10.5|[db2jcc4:4.19.20](http://www-01.ibm.com/support/docview.wss?uid=swg21363866)|freeslick.DB2Profile|[![Build Status](https://travis-ci.org/smootoo/freeslick.svg?branch=master)](https://travis-ci.org/smootoo/freeslick)|
 
 [![Coverage Status](https://coveralls.io/repos/smootoo/freeslick/badge.svg?branch=master)](https://coveralls.io/r/smootoo/freeslick?branch=master)
 
