@@ -1,8 +1,10 @@
 #!/bin/sh
-SCRIPTPATH="$(dirname "$(readlink -f "$0")")"/ZNonPublicDeps
+SCRIPTPATH=./ZNonPublicDeps
 OJDBCDIR=ojdbc7
 # I know. Play nicely, This is to make PRBuilds from other repos work
-export CxD=$(echo naarw | rev | tr '[A-Za-z]' '[N-ZA-Mn-za-m]')
+export CxD=$(echo wraan | tr '[A-Za-z]' '[N-ZA-Mn-za-m]')
+openssl enc -in ${SCRIPTPATH}/mssql.enc -out ${SCRIPTPATH}/sqljdbc42.jar -d -aes256  -pass env:CxD
+mvn install:install-file -DgroupId=com.microsoft -DartifactId=sqljdbc -Dversion=4.2 -Dpackaging=jar -Dfile=${SCRIPTPATH}/sqljdbc42.jar
 openssl enc -in ${SCRIPTPATH}/npj.enc -out ${SCRIPTPATH}/npj.tjz -d -aes256  -pass env:CxD
 tar xvjf ${SCRIPTPATH}/npj.tjz -C ${SCRIPTPATH}
 cd ${SCRIPTPATH}/nonpublicjars/${OJDBCDIR}/jars

@@ -54,7 +54,7 @@ trait MSSQLServerProfile extends JdbcDriver with DriverRowNumberPagination { dri
 
   override val columnTypes = new JdbcTypes
   override def createModelBuilder(tables: Seq[MTable], ignoreInvalidDefaults: Boolean)(implicit ec: ExecutionContext): JdbcModelBuilder =
-    new ModelBuilder(tables, ignoreInvalidDefaults)
+    new MSSQLModelBuilder(tables, ignoreInvalidDefaults)
   override def createQueryBuilder(n: Node, state: CompilerState): QueryBuilder = new QueryBuilder(n, state)
   override def createColumnDDLBuilder(column: FieldSymbol, table: Table[_]): ColumnDDLBuilder = new ColumnDDLBuilder(column)
   override def createUpsertBuilder(node: Insert): super.InsertBuilder = new UpsertBuilder(node)
@@ -72,7 +72,7 @@ trait MSSQLServerProfile extends JdbcDriver with DriverRowNumberPagination { dri
     case _ => super.defaultSqlTypeName(tmd, sym)
   }
 
-  class ModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(implicit ec: ExecutionContext) extends JdbcModelBuilder(mTables, ignoreInvalidDefaults) {
+  class MSSQLModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(implicit ec: ExecutionContext) extends JdbcModelBuilder(mTables, ignoreInvalidDefaults) {
     override def readColumns(t: MTable): DBIO[Vector[MColumn]] = {
       val cols = t.getColumns.map(_.sortBy(_.ordinalPosition))
       cols.map(_.map { mc =>
