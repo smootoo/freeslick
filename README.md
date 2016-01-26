@@ -9,7 +9,7 @@
 
 # FreeSlick
 
-Available on [maven central](http://search.maven.org/#artifactdetails|org.suecarter|freeslick_2.11|3.1.0.2|jar)
+Available on [maven central](http://search.maven.org/#artifactdetails|org.suecarter|freeslick_2.11|3.1.0.3|jar)
 
 [Free software](https://www.gnu.org/philosophy/free-sw.html)
 continuation of the [Slick](http://slick.typesafe.com/) MS-SQL driver,
@@ -43,7 +43,7 @@ val db = Database.forURL(url, driver = "net.sourceforge.jtds.jdbc.Driver")
 The artefact is published as:
 
 ```scala
-"org.suecarter" %% "freeslick" % "3.1.0.2"
+"org.suecarter" %% "freeslick" % "3.1.0.3"
 ```
 
 # Integration Tests

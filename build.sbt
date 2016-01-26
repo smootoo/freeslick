@@ -10,7 +10,7 @@ name := "freeslick"
 
 crossScalaVersions := Seq("2.11.5", "2.10.5")
 
-version := "3.1.0.3-SNAPSHOT"
+version := "3.1.0.3"
 
 //resolvers += Resolver.sonatypeRepo("snapshots")
 resolvers += Resolver.mavenLocal
