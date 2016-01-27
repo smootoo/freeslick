@@ -10,7 +10,8 @@ name := "freeslick"
 
 crossScalaVersions := Seq("2.11.5", "2.10.5")
 
-version := "3.1.0.3"
+val slickLibraryVersion = "3.1.1"
+version := s"$slickLibraryVersion.0"
 
 //resolvers += Resolver.sonatypeRepo("snapshots")
 resolvers += Resolver.mavenLocal
@@ -21,9 +22,9 @@ parallelExecution in IntegrationTest := false
 testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v", "-s", "-a", "-Djava.awt.headless=true")
 
 libraryDependencies ++= Seq(
-  "com.typesafe.slick"  %% "slick"                       % "3.1.0",
-  "com.typesafe.slick"  %% "slick-testkit"               % "3.1.0"    % "test;it",
-  "com.typesafe.slick"  %% "slick-hikaricp"              % "3.1.0"    % "test;it",
+  "com.typesafe.slick"  %% "slick"                       % slickLibraryVersion,
+  "com.typesafe.slick"  %% "slick-testkit"               % slickLibraryVersion    % "test;it",
+  "com.typesafe.slick"  %% "slick-hikaricp"              % slickLibraryVersion    % "test;it",
   "com.novocode"         % "junit-interface"             % "0.11"     % "test;it",
   "org.scalatest"       %% "scalatest"                   % "2.2.4"    % "test;it",
   "org.scalamock"       %% "scalamock-scalatest-support" % "3.2.1"    % "test;it",
