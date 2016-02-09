@@ -12,6 +12,7 @@ class FreeslickDriverTest(driver: TestDB) extends DriverTest(driver) {
       classOf[FetchOffsetTest] :+
       classOf[FreeslickGroupByTest] :+
       classOf[FreeslickInsertTest] :+
+      classOf[FreeslickClobTest] :+
       classOf[FreeslickJoinTest] :+
       classOf[FreeslickMutateTest] :+
       classOf[FreeslickSubqueryTest] :+
