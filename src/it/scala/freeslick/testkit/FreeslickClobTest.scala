@@ -24,7 +24,7 @@ class FreeslickClobTest extends AsyncTest[JdbcTestDB] {
 
   class T(tableName: String)(tag: Tag) extends Table[(Int, LongString)](tag, tableName) {
     def id = column[Int]("ID", O.AutoInc, O.PrimaryKey)
-    def name = column[LongString]("NAME", O.SqlType("CLOB"))
+    def name = column[LongString]("NAME")
     def * = (id, name)
   }
 
@@ -38,7 +38,7 @@ class FreeslickClobTest extends AsyncTest[JdbcTestDB] {
         val data = longCharSeq
         for {
           // Single insert returns single auto inc value
-          _ <- ts +=(0, LongString(data))
+          _ <- ts += (0, LongString(data))
           _ <- ts.sortBy(_.id).result.map{ s =>
             s.length shouldBe 1
             s.head._1 shouldBe 1
