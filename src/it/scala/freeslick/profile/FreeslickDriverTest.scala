@@ -19,7 +19,7 @@ class FreeslickDriverTest(driver: TestDB) extends DriverTest(driver) {
       classOf[JDBCFunctionTest] :+
       classOf[UUIDTest]
     //TODO Sue timestamps, blobs, all the jdbcfunctions
-    //Seq(classOf[FreeslickInsertTest])
+    //Seq(classOf[FreeslickClobTest])
   }
 }
 
