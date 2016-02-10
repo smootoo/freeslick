@@ -141,4 +141,8 @@ pomExtra :=
      <id>geggo98</id>
      <name>Stefan Schwetschke</name>
   </developer>
+  <developer>
+     <id>mkljakubowski</id>
+     <name>Mikołaj Jakubowski</name>
+  </developer>
 </developers>
