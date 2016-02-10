@@ -1,6 +1,6 @@
 package freeslick
 
-import java.sql.{ Blob, PreparedStatement, ResultSet }
+import java.sql.{ Clob, Blob, PreparedStatement, ResultSet }
 import java.util.UUID
 
 import com.typesafe.config.{ Config, ConfigException }
@@ -237,6 +237,7 @@ trait OracleProfile extends JdbcDriver with DriverRowNumberPagination with Frees
   class JdbcTypes extends super.JdbcTypes {
     override val booleanJdbcType = new BooleanJdbcType
     override val blobJdbcType = new BlobJdbcType
+    override val clobJdbcType = new ClobJdbcType
 
     /* Oracle does not have a proper BOOLEAN type. The suggested workaround is
      * CHAR with constants 1 and 0 for TRUE and FALSE. */
@@ -248,6 +249,15 @@ trait OracleProfile extends JdbcDriver with DriverRowNumberPagination with Frees
       override def setValue(v: Blob, p: PreparedStatement, idx: Int) = {
         v match {
           case serialBlob: javax.sql.rowset.serial.SerialBlob => p.setBlob(idx, serialBlob.getBinaryStream)
+          case _ => super.setValue(v, p, idx)
+        }
+      }
+    }
+
+    class ClobJdbcType extends super.ClobJdbcType {
+      override def setValue(v: Clob, p: PreparedStatement, idx: Int) = {
+        v match {
+          case serialClob: javax.sql.rowset.serial.SerialClob => p.setClob(idx, serialClob.getCharacterStream)
           case _ => super.setValue(v, p, idx)
         }
       }
