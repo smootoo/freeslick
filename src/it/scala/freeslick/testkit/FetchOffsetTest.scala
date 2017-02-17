@@ -44,6 +44,9 @@ class FetchOffsetTest extends AsyncTest[JdbcTestDB] {
       _ <- q2.drop(7).take(50).map(_.age).result.map(_ shouldBe data.map(_._2).sorted.slice(7,57))
     // taking passed the end should be empty
       _ <- q2.drop(data.size).take(50).map(_.age).result.map(_ shouldBe Seq())
+    // taking with compiled query
+      takeMaxCompiled = Compiled((max: ConstColumn[Long]) => people.take(max))
+      _ <- takeMaxCompiled(3).result.map(_.size shouldBe 3)
     } yield ()
   }
 }

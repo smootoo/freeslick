@@ -108,7 +108,7 @@ trait MSSQLServerProfile extends JdbcDriver with DriverRowNumberPagination { dri
     override protected def buildSelectModifiers(c: Comprehension) {
       (c.fetch, c.offset) match {
         case (Some(t), Some(d)) => b"top ($d + $t) "
-        case (Some(t), None) => b"top $t "
+        case (Some(t), None) => b"top ($t) "
         case (None, _) => if (c.orderBy.nonEmpty) b"top 100 percent "
       }
       super.buildSelectModifiers(c)
