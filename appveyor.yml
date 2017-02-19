@@ -17,13 +17,14 @@ install:
       Add-Type -AssemblyName System.IO.Compression.FileSystem
       if (!(Test-Path -Path "C:\maven" )) {
         (new-object System.Net.WebClient).DownloadFile(
-          'http://www.us.apache.org/dist/maven/maven-3/3.2.5/binaries/apache-maven-3.2.5-bin.zip',
+          'http://www.us.apache.org/dist/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.zip',
           'C:\maven-bin.zip'
         )
         [System.IO.Compression.ZipFile]::ExtractToDirectory("C:\maven-bin.zip", "C:\maven")
       }
-  - cmd: SET PATH=C:\maven\apache-maven-3.2.5\bin;%JAVA_HOME%\bin;%PATH%
-  - cmd: SET MAVEN_OPTS=-XX:MaxPermSize=2g -Xmx4g
+  - cmd: SET PATH=C:\maven\apache-maven-3.1.1\bin;%JAVA_HOME%\bin;%PATH%
+  - cmd: SET M2_HOME=C:\maven\apache-maven-3.1.1
+  - cmd: SET MAVEN_OPTS=-XX:MaxPermSize=2g -Xmx4g -Dmaven.multiModuleProjectDirectory=%M2_HOME% 
   - cmd: SET JAVA_OPTS=-XX:MaxPermSize=2g -Xmx4g
   - ps: |
       [reflection.assembly]::LoadWithPartialName("Microsoft.SqlServer.Smo") | Out-Null;
@@ -67,6 +68,5 @@ build_script:
 test_script:
   - sbt set" javaOptions ++= "Seq(\"-Dslick.testkit-config=test-dbs/testkit-appveyor.conf\") test it:test
 cache:
-  - C:\sbt\
   - C:\Users\appveyor\.m2
   - C:\Users\appveyor\.ivy2
