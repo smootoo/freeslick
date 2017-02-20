@@ -11,7 +11,7 @@ name := "freeslick"
 crossScalaVersions := Seq("2.11.5", "2.10.5")
 
 val slickLibraryVersion = "3.1.1"
-version := s"$slickLibraryVersion.1"
+version := s"$slickLibraryVersion.2"
 
 //resolvers += Resolver.sonatypeRepo("snapshots")
 resolvers += Resolver.mavenLocal
